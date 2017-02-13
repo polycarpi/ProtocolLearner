@@ -68,10 +68,10 @@ class DataPoint
 {
 public:
     DataPoint(const std::vector<T>& aVector, const uint16_t aIndex) : 
+        m_MeanIndex{0},
+        m_EuclideanDistanceFromAssignedMean{0.0},        
         m_Vector{aVector}, 
-        m_Index{aIndex}, 
-        m_EuclideanDistanceFromAssignedMean{0.0},
-        m_MeanIndex{0}
+        m_Index{aIndex}
     {
 
 	}
