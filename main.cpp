@@ -103,17 +103,17 @@ public:
 		for(auto& lMeanPoint : m_CurrentMeans)
 		{
 			std::vector<T> lAverageVector(m_CurrentNumMeans, 0.0);
-			std::vector<DataPoint<float> >::iterator lPointIterator = m_PointVector.begin();
+			typename std::vector<DataPoint<T> >::iterator lPointIterator = m_PointVector.begin();
 			std::uint16_t lNumberInGroup = 0;
 			while(lPointIterator != m_PointVector.end())
 			{
 				lPointIterator = std::find_if(lPointIterator, 
 				    m_PointVector.end(), 
-				    [&](const DataPoint<float>& aPoint){return aPoint.m_MeanIndex == lMeanPoint.m_Label;});
+				    [&](const DataPoint<T>& aPoint){return aPoint.m_MeanIndex == lMeanPoint.m_Label;});
 				
 				if(lPointIterator != m_PointVector.end())
 				{
-				    for(std::vector<float>::iterator lIt = lAverageVector.begin();
+				    for(typename std::vector<T>::iterator lIt = lAverageVector.begin();
 				        lIt != lAverageVector.end();
 				        ++lIt)
 				    {
@@ -125,7 +125,7 @@ public:
 			}
 			for(auto& lElement : lAverageVector)
 			{
-				lElement /= static_cast<float>(lNumberInGroup);
+				lElement /= static_cast<T>(lNumberInGroup);
 			}
 			std::copy(lAverageVector.begin(), lAverageVector.end(), lMeanPoint.m_Vector.begin());
 		}
@@ -170,10 +170,10 @@ public:
 		return *it;
 	}	
     
-    T mCalculateEuclideanDistance(const DataPoint<float> aPoint, const MeanPoint<float> aMeanPoint)
+    T mCalculateEuclideanDistance(const DataPoint<T> aPoint, const MeanPoint<T> aMeanPoint)
     {
 		T lAcc = 0.0;
-		for(std::vector<float>::const_iterator lIt = aPoint.m_Vector.begin(); 
+		for(typename std::vector<T>::const_iterator lIt = aPoint.m_Vector.begin(); 
 		    lIt != aPoint.m_Vector.end(); 
 		    ++lIt)
 		{
@@ -184,7 +184,7 @@ public:
     
     const std::uint16_t mFindNearestMean(const DataPoint<T>& aPoint)
     {
-		std::vector<MeanPoint<float> >::iterator lMeansIterator = m_CurrentMeans.begin();
+		typename std::vector<MeanPoint<T> >::iterator lMeansIterator = m_CurrentMeans.begin();
 		T lCurrentMinEuclidean = mCalculateEuclideanDistance(aPoint, *lMeansIterator);
 		std::uint16_t lCurrentClosestMeanIndex = m_CurrentMeans.at(0).m_Label;
 		
@@ -278,7 +278,7 @@ private:
     std::uint16_t m_PointIndex;
 };
 
-template <typename T>
+template<typename T>
 std::ostream& operator<<(std::ostream& os, const KMeans<T>& ca)
 {
 
