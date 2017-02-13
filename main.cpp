@@ -102,7 +102,7 @@ public:
     {
 		for(auto& lMeanPoint : m_CurrentMeans)
 		{
-			std::vector<T> lAverageVector(m_CurrentNumMeans, 0.0);
+			std::vector<T> lAverageVector(m_NumArgs, 0.0);
 			typename std::vector<DataPoint<T> >::iterator lPointIterator = m_PointVector.begin();
 			std::uint16_t lNumberInGroup = 0;
 			while(lPointIterator != m_PointVector.end())
@@ -127,7 +127,7 @@ public:
 			{
 				lElement /= static_cast<T>(lNumberInGroup);
 			}
-			std::copy(lAverageVector.begin(), lAverageVector.end(), lMeanPoint.m_Vector.begin());
+			lMeanPoint.m_Vector = lAverageVector;
 		}
 	}    
     
@@ -185,7 +185,9 @@ public:
     const std::uint16_t mFindNearestMean(const DataPoint<T>& aPoint)
     {
 		typename std::vector<MeanPoint<T> >::iterator lMeansIterator = m_CurrentMeans.begin();
+		
 		T lCurrentMinEuclidean = mCalculateEuclideanDistance(aPoint, *lMeansIterator);
+		
 		std::uint16_t lCurrentClosestMeanIndex = m_CurrentMeans.at(0).m_Label;
 		
 		++lMeansIterator;
@@ -204,13 +206,29 @@ public:
     
     void mAssignAll()
     {
-	    //For each id in the main list, assign to the nearest mean.
+		
+#define USEOMP 0
+#if USEOMP
+		uint16_t lVecSize = m_PointVector.size();
+		#pragma omp parallel for num_threads(4)
+		for(int iT = 0; iT < lVecSize; ++iT)
+		{
+			uint16_t oldID = m_PointVector.at(iT).m_MeanIndex;
+			std::uint16_t lNearestMeanID = mFindNearestMean(m_PointVector.at(iT));
+			m_PointVector.at(iT).m_MeanIndex = lNearestMeanID;
+			m_PointVector.at(iT).m_EuclideanDistanceFromAssignedMean = mCalculateEuclideanDistance(m_PointVector.at(iT), m_CurrentMeans.at(m_PointVector.at(iT).m_MeanIndex));			
+		}
+#else
+		
 	    for(auto& i : m_PointVector)
 	    {
+			auto oldID = i.m_MeanIndex;
 			std::uint16_t lNearestMeanID = mFindNearestMean(i);
 			i.m_MeanIndex = lNearestMeanID;
 			i.m_EuclideanDistanceFromAssignedMean = mCalculateEuclideanDistance(i, m_CurrentMeans.at(i.m_MeanIndex));
 		}
+		
+#endif
 	}
     
     void mInitialise(const std::uint16_t aNumMeans)
@@ -461,11 +479,110 @@ is unchanged but that the second mean is the mid-point of the two")
 	const auto extractedLastPacket = packetLearner.mExtract(2);
 	const std::uint16_t lMeanOfInterest = extractedLastPacket.m_MeanIndex;
     const auto lExtractedMean = packetLearner.mExtractMean(lMeanOfInterest);
-    std::cout << "(" << lExtractedMean.m_Vector.at(0) << ", " << lExtractedMean.m_Vector.at(1) << ")" << std::endl;
     REQUIRE(0.875 == lExtractedMean.m_Vector.at(0));
     REQUIRE(0.125 == lExtractedMean.m_Vector.at(1));
     
 }
+
+
+TEST_CASE("Generate 1 packet and initialise. Add a second packet and \
+run the assignment followed by the update. Verify that the mean is \
+the mean of the two packets")
+{
+	const uint16_t numArgs = 2;
+	const uint16_t numMeans = 1;
+    KMeans<float> packetLearner(numArgs);
+
+    std::vector<float> tempPacket;
+    tempPacket.push_back(0.25f);
+    tempPacket.push_back(0.75f);
+    packetLearner.mSubmit(tempPacket);
+    
+    packetLearner.mInitialise(numMeans);    
+    
+    tempPacket.clear();
+    tempPacket.push_back(0.75f);
+    tempPacket.push_back(0.25f);
+    packetLearner.mSubmit(tempPacket);        
+	
+	packetLearner.mAssignAll();
+	packetLearner.mUpdateMeans();
+	
+    const auto lExtractedMean = packetLearner.mExtractMean(0);
+    REQUIRE(0.5 == lExtractedMean.m_Vector.at(0));
+    REQUIRE(0.5 == lExtractedMean.m_Vector.at(1));
+    
+    tempPacket.clear();
+    tempPacket.push_back(0.125f);
+    tempPacket.push_back(0.5f);
+    packetLearner.mSubmit(tempPacket);  
+    
+	packetLearner.mAssignAll();
+	packetLearner.mUpdateMeans();      
+	    
+    const auto lAnotherExtractedMean = packetLearner.mExtractMean(0);
+    REQUIRE(0.375 == lAnotherExtractedMean.m_Vector.at(0));
+    REQUIRE(0.5 == lAnotherExtractedMean.m_Vector.at(1));	    
+    
+}
+
+
+TEST_CASE("Generate 1000 packets and run clustering")
+{
+	const uint16_t numArgs = 2;
+	const uint16_t numMeans = 4;
+	const uint16_t numPoints = 10000;
+	const uint32_t numClusteringRuns = 1000;
+    KMeans<float> packetLearner(numArgs);
+
+    std::vector<float> tempPacket;
+    unsigned seed1 = std::chrono::system_clock::now().time_since_epoch().count();    
+    std::default_random_engine generator(seed1);
+    std::uniform_real_distribution<double> distribution(0.0,1.0);
+    
+    for(uint16_t lSample = 0; lSample < numPoints; ++lSample)
+    {
+		tempPacket.clear();
+		for(uint16_t lArg = 0; lArg < numArgs; ++lArg)
+		{
+		    tempPacket.push_back(distribution(generator));
+	    }
+        packetLearner.mSubmit(tempPacket);
+	}
+		
+    packetLearner.mInitialise(numMeans);
+   
+    std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();   
+   
+    for(uint32_t i = 0; i < numClusteringRuns; ++i)
+    {
+	    packetLearner.mAssignAll();	
+	    packetLearner.mUpdateMeans();
+
+    }
+    
+    std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();   
+	std::cout << chrono::duration_cast<chrono::milliseconds>(t2 - t1).count() << std::endl;
+	
+    for(int i = 0; i < numMeans; ++i)
+    {
+        std::cout << ": (";
+        for(int j = 0; j < numArgs - 1; ++j)
+	    {
+    		std::cout << packetLearner.mExtractMean(i).m_Vector.at(j) << ", ";
+    	}
+    	std::cout << packetLearner.mExtractMean(i).m_Vector.at(numArgs - 1) << ")" << std::endl;
+    }
+    std::cout << std::endl;    
+	
+	const auto extractedLastPacket = packetLearner.mExtract(2);
+	const std::uint16_t lMeanOfInterest = extractedLastPacket.m_MeanIndex;
+    const auto lExtractedMean = packetLearner.mExtractMean(lMeanOfInterest);
+    REQUIRE(0.875 == lExtractedMean.m_Vector.at(0));
+    REQUIRE(0.125 == lExtractedMean.m_Vector.at(1));
+    
+}
+
 
 
 int BinaryMain(int c, char * argv[])
