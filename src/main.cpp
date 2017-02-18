@@ -11,6 +11,11 @@
 #include "catch.hpp"
 #include "KMeans.hpp"
 #include "PacketAnalyser.hpp"
+#include "CUdpPair.hpp"
+#include "CUdpProtocolLearner.hpp"
+#include "CUdpSender.hpp"
+
+
 
 using namespace std;
 
@@ -237,19 +242,19 @@ the mean of the two packets")
     
 }
 
-
 TEST_CASE("Generate 1000 packets and run clustering")
 {
 	const uint16_t numArgs = 2;
 	const uint16_t numMeans = 4;
 	const uint16_t numPoints = 1000;
 	const uint32_t numClusteringRuns = 1000;
+	
     KMeans<float> packetLearner(numArgs);
     
     const float_t corners[] = {0.2, 0.3, 0.7, 0.8};
 
     std::vector<float> tempPacket;
-    unsigned seed1 = std::chrono::system_clock::now().time_since_epoch().count();    
+    unsigned seed1 = 42;  
     std::default_random_engine generator(seed1);
     std::uniform_real_distribution<double> distribution(0.0,1.0);
     
@@ -269,7 +274,6 @@ TEST_CASE("Generate 1000 packets and run clustering")
     {
 	    packetLearner.mAssignAll();	
 	    packetLearner.mUpdateMeans();
-
     }
     
 	const auto extractedLastPacket = packetLearner.mExtract(0);
@@ -297,10 +301,53 @@ TEST_CASE("Generate 1000 packets and run clustering")
 	{
 		REQUIRE(1 == 0);
 	}
-    
 }
 
+TEST_CASE("Test basic UDP protocol learner functionality, namely that we can set up a protocol learner and inject packets")
+{
+	
+	const std::uint16_t lHighReceiverPort{4567};
+	const std::uint16_t lLowReceiverPort{10020};
+	const std::uint32_t lBufferSize{1024*1024};
+	
+	CUdpPair UdpPair_HighToLow(std::string("localhost"), std::string("localhost"), lHighReceiverPort, lBufferSize);
+	CUdpPair UdpPair_LowToHigh(std::string("localhost"), std::string("localhost"), lLowReceiverPort, lBufferSize);
 
+    const std::uint32_t lMaxPacketsToObserve{10};
+    const std::uint32_t lMaxTimeToObserve_s{3600};
+
+	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, UdpPair_LowToHigh, lMaxPacketsToObserve, lMaxTimeToObserve_s);
+	
+	REQUIRE(UdpProtocolLearner.mGetPacketsSeen() == 0);
+	
+	CUdpSender UdpSender(std::string("localhost"), lHighReceiverPort);
+	const std::vector<std::uint8_t> lFrame({0x1A, 0x4C});
+	UdpSender.mSend(lFrame);
+	
+	REQUIRE(UdpProtocolLearner.mGetPacketsSeen() == 1);
+	
+}
+/*
+TEST_CASE("Test that the UDP protocol learner sends through packets unchanged")
+{
+	bool lPacketReceivedOnLow = false;
+	CUdpServerFake lFakeUdpReceiver("localhost", lLowPort, auto [&](){lPacketReceivedOnLow = true});
+	
+	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, UdpPair_LowToHigh, lMaxPacketsToObserve, lMaxTimeToObserve);
+		
+	REQUIRE(!lPacketReceivedOnLow);
+		
+	CUdpSender UdpSender("localhost", lHighPort);
+	const std::vector<std::uint8_t> lFrame({0x1A, 0x4C});
+	UdpSender.mSend(lFrame);
+	
+	REQUIRE(lPacketReceivedOnLow);
+	
+	const auto lPacketReceived = lFakeUdpReceiver.mPopFrame();
+	REQUIRE(lPacketReceived == lFrame);
+	
+}
+*/
 /*
 int BinaryMain(int c, char * argv[])
 {

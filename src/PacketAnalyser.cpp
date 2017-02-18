@@ -2,7 +2,7 @@
 
 void PacketAnalyser::mAnalysePacket()
 {
-    for(auto i : vec)
+    for(auto i : m_Vec)
     {
 			if(i < 32)
 			{
@@ -25,8 +25,8 @@ void PacketAnalyser::mAnalysePacket()
 	    m_Character += 1.0f;
 	}
 		}
-		m_PacketSize = static_cast<float>(vec.size());
-		m_Symbolics /= static_cast<float>(vec.size());
-		m_Numeric /= static_cast<float>(vec.size());
-		m_Character /= static_cast<float>(vec.size());
+		m_PacketSize = static_cast<float>(m_Vec.size());
+		m_Symbolics /= static_cast<float>(m_Vec.size());
+		m_Numeric /= static_cast<float>(m_Vec.size());
+		m_Character /= static_cast<float>(m_Vec.size());
 };

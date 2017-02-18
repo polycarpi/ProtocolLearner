@@ -111,6 +111,78 @@ tests/fast:
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/build
 .PHONY : tests/fast
 
+src/CUdpPair.o: src/CUdpPair.cpp.o
+.PHONY : src/CUdpPair.o
+
+# target to build an object file
+src/CUdpPair.cpp.o:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpPair.cpp.o
+.PHONY : src/CUdpPair.cpp.o
+
+src/CUdpPair.i: src/CUdpPair.cpp.i
+.PHONY : src/CUdpPair.i
+
+# target to preprocess a source file
+src/CUdpPair.cpp.i:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpPair.cpp.i
+.PHONY : src/CUdpPair.cpp.i
+
+src/CUdpPair.s: src/CUdpPair.cpp.s
+.PHONY : src/CUdpPair.s
+
+# target to generate assembly for a file
+src/CUdpPair.cpp.s:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpPair.cpp.s
+.PHONY : src/CUdpPair.cpp.s
+
+src/CUdpProtocolLearner.o: src/CUdpProtocolLearner.cpp.o
+.PHONY : src/CUdpProtocolLearner.o
+
+# target to build an object file
+src/CUdpProtocolLearner.cpp.o:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpProtocolLearner.cpp.o
+.PHONY : src/CUdpProtocolLearner.cpp.o
+
+src/CUdpProtocolLearner.i: src/CUdpProtocolLearner.cpp.i
+.PHONY : src/CUdpProtocolLearner.i
+
+# target to preprocess a source file
+src/CUdpProtocolLearner.cpp.i:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpProtocolLearner.cpp.i
+.PHONY : src/CUdpProtocolLearner.cpp.i
+
+src/CUdpProtocolLearner.s: src/CUdpProtocolLearner.cpp.s
+.PHONY : src/CUdpProtocolLearner.s
+
+# target to generate assembly for a file
+src/CUdpProtocolLearner.cpp.s:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpProtocolLearner.cpp.s
+.PHONY : src/CUdpProtocolLearner.cpp.s
+
+src/CUdpSender.o: src/CUdpSender.cpp.o
+.PHONY : src/CUdpSender.o
+
+# target to build an object file
+src/CUdpSender.cpp.o:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpSender.cpp.o
+.PHONY : src/CUdpSender.cpp.o
+
+src/CUdpSender.i: src/CUdpSender.cpp.i
+.PHONY : src/CUdpSender.i
+
+# target to preprocess a source file
+src/CUdpSender.cpp.i:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpSender.cpp.i
+.PHONY : src/CUdpSender.cpp.i
+
+src/CUdpSender.s: src/CUdpSender.cpp.s
+.PHONY : src/CUdpSender.s
+
+# target to generate assembly for a file
+src/CUdpSender.cpp.s:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpSender.cpp.s
+.PHONY : src/CUdpSender.cpp.s
+
 src/KMeans.o: src/KMeans.cpp.o
 .PHONY : src/KMeans.o
 
@@ -192,6 +264,15 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... tests"
+	@echo "... src/CUdpPair.o"
+	@echo "... src/CUdpPair.i"
+	@echo "... src/CUdpPair.s"
+	@echo "... src/CUdpProtocolLearner.o"
+	@echo "... src/CUdpProtocolLearner.i"
+	@echo "... src/CUdpProtocolLearner.s"
+	@echo "... src/CUdpSender.o"
+	@echo "... src/CUdpSender.i"
+	@echo "... src/CUdpSender.s"
 	@echo "... src/KMeans.o"
 	@echo "... src/KMeans.i"
 	@echo "... src/KMeans.s"

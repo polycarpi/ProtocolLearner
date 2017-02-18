@@ -11,9 +11,8 @@
 #include <algorithm>
 
 template <class T>
-class DataPoint
+struct DataPoint
 {
-public:
     DataPoint(const std::vector<T>& aVector, const uint16_t aIndex) : 
         m_MeanIndex{0},
         m_EuclideanDistanceFromAssignedMean{0.0},        
@@ -30,9 +29,8 @@ public:
 };
 
 template <class T>
-class MeanPoint
+struct MeanPoint
 {
-public:
     MeanPoint(const std::uint16_t aLabel, const std::vector<T>& aVector) : 
         m_Label{aLabel}, 
         m_Vector{aVector}{}
@@ -79,21 +77,11 @@ public:
 			lMeanPoint.m_Vector = lAverageVector;
 		}
 	}
-		
-	
-	
-	
-	
-	
-	
-	
+
     void mSubmit(const std::vector<T>& inVector)
     {
         m_PointVector.emplace_back(inVector, m_PointIndex++);
     }
-    
-    
-    
     
     const DataPoint<T>& mExtract(const uint16_t aIndex) const
 	{
@@ -130,15 +118,6 @@ public:
 		return *it;
 	}    
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
     const T mCalculateEuclideanDistance(const DataPoint<T> aPoint, const MeanPoint<T> aMeanPoint)
 	{
 		T lAcc = 0.0;
@@ -150,14 +129,6 @@ public:
 		}
 		return sqrt(lAcc);
 	}    
-    
-    
-    
-    
-    
-    
-    
-    
     
     const std::uint16_t mFindNearestMean(const DataPoint<T>& aPoint)
 	{
@@ -181,14 +152,6 @@ public:
 		return lCurrentClosestMeanIndex;
 	}    
     
-    
-    
-    
-    
-    
-    
-    
-    
     void mAssignAll()
 	{	
 	    for(auto& i : m_PointVector)
@@ -199,14 +162,7 @@ public:
 			i.m_EuclideanDistanceFromAssignedMean = mCalculateEuclideanDistance(i, m_CurrentMeans.at(i.m_MeanIndex));
 		}
 	}    
-    
-    
-    
-    
-    
-    
-    
-    
+
     void mInitialise(const std::uint16_t aNumMeans)
 	{
 		m_CurrentNumMeans = aNumMeans;
@@ -221,11 +177,7 @@ public:
 	    	m_CurrentMeans.emplace_back(lMean, m_PointVector.at(lMean).m_Vector);
 		}
 	}    
-    
-    
-    
-    
-    
+
     const std::vector<DataPoint<T> > mGetCurrentMeans()
 	{
 		std::vector<DataPoint<T> > lCurrentMeans;
@@ -244,37 +196,13 @@ public:
 		return lCurrentMeans;
 	}    
     
-    
-    
-    
     const uint16_t mGetNumPoints() const
 	{
 	    return m_PointVector.size();
 	}    
     
-    
-    
-    
-    
-    
     friend std::ostream& operator<<(std::ostream& os, const KMeans<float>& ca);
-    void mRunKMeans(const uint16_t aNumMeans, const uint16_t aNumIterations)
-	{
-	    std::vector<std::pair<std::vector<T>, uint16_t> > means;
-	    std::vector<uint16_t> randomIndices;
-	        
-	    std::default_random_engine generator(std::chrono::system_clock::now().time_since_epoch().count());
-	    std::uniform_int_distribution<uint16_t> dist(0, m_PointVector.size() - 1);
-	
-	    while(randomIndices.size() < aNumMeans)
-	    {
-	        uint16_t sample = dist(generator);
-	        if(std::find(randomIndices.begin(), randomIndices.end(), sample) == randomIndices.end())
-	        {
-	            randomIndices.push_back(sample);
-	        }
-	    }
-	}
+
 private:
     std::vector<DataPoint<T> > m_PointVector;
     const uint16_t m_NumArgs;

@@ -8,7 +8,12 @@ project(ProtocolAnalyser)
 #link_directories(${Boost_LIBRARY_DIR})
 
 include_directories(include)
-set(SOURCES src/main.cpp src/KMeans.cpp src/PacketAnalyser.cpp)
+set(SOURCES src/main.cpp
+            src/KMeans.cpp 
+            src/PacketAnalyser.cpp
+            src/CUdpPair.cpp
+            src/CUdpProtocolLearner.cpp
+            src/CUdpSender.cpp)
 
 add_compile_options(-std=c++0x)
 
