@@ -15,7 +15,7 @@ set(SOURCES src/main.cpp
             src/CUdpProtocolLearner.cpp
             src/CUdpSender.cpp)
 
-add_compile_options(-std=c++0x)
+add_compile_options(-std=c++11)
 
 add_executable(tests ${SOURCES})
 TARGET_LINK_LIBRARIES(tests pcap pthread)

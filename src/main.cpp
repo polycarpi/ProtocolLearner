@@ -319,12 +319,14 @@ TEST_CASE("Test basic UDP protocol learner functionality, namely that we can set
 	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, UdpPair_LowToHigh, lMaxPacketsToObserve, lMaxTimeToObserve_s);
 	
 	REQUIRE(UdpProtocolLearner.mGetPacketsSeen() == 0);
+	REQUIRE(UdpProtocolLearner.mGetTotalBytesSeen() == 0);
 	
 	CUdpSender UdpSender(std::string("localhost"), lHighReceiverPort);
 	const std::vector<std::uint8_t> lFrame({0x1A, 0x4C});
 	UdpSender.mSend(lFrame);
 	
 	REQUIRE(UdpProtocolLearner.mGetPacketsSeen() == 1);
+	REQUIRE(UdpProtocolLearner.mGetTotalBytesSeen() == 2);	
 	
 }
 /*

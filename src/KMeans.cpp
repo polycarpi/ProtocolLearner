@@ -1,16 +1,5 @@
 #include "KMeans.hpp"
 
-
-
-
-
-
-
-  
-
-
-
-
 template<class T>
 std::ostream& operator<<(std::ostream& os, const KMeans<T>& ca)
 {
