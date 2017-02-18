@@ -1,3 +1,9 @@
+#ifndef PACKETANALYSER_H
+#define PACKETANALYSER_H
+
+#include <vector>
+#include <cstdint>
+
 class PacketAnalyser
 {
 public:
@@ -18,3 +24,5 @@ private:
     float m_Character;
     float m_Control;
 };
+
+#endif

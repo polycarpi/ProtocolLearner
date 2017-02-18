@@ -1,5 +1,4 @@
 #define CATCH_CONFIG_MAIN
-#include "../TapTapd/include/catch.hpp"
 
 #include <iostream>
 #include <list>
@@ -9,6 +8,7 @@
 #include <assert.h>
 #include <chrono>
 
+#include "catch.hpp"
 #include "KMeans.hpp"
 
 using namespace std;
@@ -127,7 +127,7 @@ TEST_CASE("Generate 2 packets and initialise. Check that the initial means are u
 	}
 
 }
-
+/*
 TEST_CASE("Generate 2 packets and initialise. Add a third packet and \
 run the assignment. Check that the initial means don't change")
 {
@@ -346,9 +346,9 @@ TEST_CASE("Generate 1000 packets and run clustering")
     REQUIRE(0.125 == lExtractedMean.m_Vector.at(1));
     
 }
+*/
 
-
-
+/*
 int BinaryMain(int c, char * argv[])
 {
 	
@@ -391,3 +391,4 @@ int BinaryMain(int c, char * argv[])
 
   return 0;
 }
+*/
