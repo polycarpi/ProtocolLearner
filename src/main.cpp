@@ -127,7 +127,7 @@ TEST_CASE("Generate 2 packets and initialise. Check that the initial means are u
 	}
 
 }
-/*
+
 TEST_CASE("Generate 2 packets and initialise. Add a third packet and \
 run the assignment. Check that the initial means don't change")
 {
@@ -315,9 +315,7 @@ TEST_CASE("Generate 1000 packets and run clustering")
 	}
 		
     packetLearner.mInitialise(numMeans);
-   
-    std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();   
-   
+      
     for(uint32_t i = 0; i < numClusteringRuns; ++i)
     {
 	    packetLearner.mAssignAll();	
@@ -325,28 +323,34 @@ TEST_CASE("Generate 1000 packets and run clustering")
 
     }
     
-    std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();   
-	std::cout << chrono::duration_cast<chrono::milliseconds>(t2 - t1).count() << std::endl;
-	
-    for(int i = 0; i < numMeans; ++i)
-    {
-        std::cout << ": (";
-        for(int j = 0; j < numArgs - 1; ++j)
-	    {
-    		std::cout << packetLearner.mExtractMean(i).m_Vector.at(j) << ", ";
-    	}
-    	std::cout << packetLearner.mExtractMean(i).m_Vector.at(numArgs - 1) << ")" << std::endl;
-    }
-    std::cout << std::endl;    
-	
-	const auto extractedLastPacket = packetLearner.mExtract(2);
+	const auto extractedLastPacket = packetLearner.mExtract(0);
 	const std::uint16_t lMeanOfInterest = extractedLastPacket.m_MeanIndex;
     const auto lExtractedMean = packetLearner.mExtractMean(lMeanOfInterest);
-    REQUIRE(0.875 == lExtractedMean.m_Vector.at(0));
-    REQUIRE(0.125 == lExtractedMean.m_Vector.at(1));
+    
+    // Ensure that the extracted mean falls into one of the four 'corners'
+    if((0.8 >= lExtractedMean.m_Vector.at(0)) && (0.7 <= lExtractedMean.m_Vector.at(0)) && 
+       (0.8 >= lExtractedMean.m_Vector.at(1)) && (0.7 <= lExtractedMean.m_Vector.at(1)))
+    {
+	}
+	else if((0.8 >= lExtractedMean.m_Vector.at(0)) && (0.7 <= lExtractedMean.m_Vector.at(0)) && 
+       (0.3 >= lExtractedMean.m_Vector.at(1)) && (0.2 <= lExtractedMean.m_Vector.at(1)))
+    {
+	}
+	else if((0.3 >= lExtractedMean.m_Vector.at(0)) && (0.2 <= lExtractedMean.m_Vector.at(0)) && 
+       (0.8 >= lExtractedMean.m_Vector.at(1)) && (0.7 <= lExtractedMean.m_Vector.at(1)))
+    {
+	}
+	else if((0.3 >= lExtractedMean.m_Vector.at(0)) && (0.2 <= lExtractedMean.m_Vector.at(0)) && 
+       (0.3 >= lExtractedMean.m_Vector.at(1)) && (0.2 <= lExtractedMean.m_Vector.at(1)))
+    {
+	}
+	else
+	{
+		REQUIRE(1 == 0);
+	}
     
 }
-*/
+
 
 /*
 int BinaryMain(int c, char * argv[])
