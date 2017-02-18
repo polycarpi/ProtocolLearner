@@ -10,62 +10,9 @@
 
 #include "catch.hpp"
 #include "KMeans.hpp"
+#include "PacketAnalyser.hpp"
 
 using namespace std;
-
-class PacketAnalyser
-{
-public:
-	PacketAnalyser(const std::vector<uint16_t>& inVector) : vec{inVector}, m_PacketSize{0}, m_Symbolics{0}, m_Numeric{0}, m_Character{0}
-	{		
-	};
-	void mAnalysePacket()
-	{
-	    for(auto i : vec)
-	    {
-    	        if(i < 32)
-    	        {
-		    // Control
-		    m_Control += 1.0f;
-		}
-		else if(i < 48)
-		{
-		    // Symbolic
-		    m_Symbolics += 1.0f;
-		}
-		else if(i < 58)
-		{
-		    // Numeric
-		    m_Numeric += 1.0f;
-		}
-		else
-		{
-		    // Character
-		    m_Character += 1.0f;
-		}
-            }
-            m_PacketSize = static_cast<float>(vec.size());
-            m_Symbolics /= static_cast<float>(vec.size());
-            m_Numeric /= static_cast<float>(vec.size());
-            m_Character /= static_cast<float>(vec.size());
-	};
-
-    
-        const std::vector<float> getAnalysis()
-        {
-            return std::vector<float>({m_PacketSize, m_Symbolics, m_Numeric, m_Character});
-        }
-private:
-    const std::vector<uint16_t> vec;
-    float m_PacketSize;
-    float m_Symbolics;
-    float m_Numeric;
-    float m_Character;
-    float m_Control;
-};
-
-
-
 
 void packetHandler(u_char * userData, const struct pcap_pkthdr * pkthdr, const u_char * packet)
 {
@@ -298,6 +245,8 @@ TEST_CASE("Generate 1000 packets and run clustering")
 	const uint16_t numPoints = 1000;
 	const uint32_t numClusteringRuns = 1000;
     KMeans<float> packetLearner(numArgs);
+    
+    const float_t corners[] = {0.2, 0.3, 0.7, 0.8};
 
     std::vector<float> tempPacket;
     unsigned seed1 = std::chrono::system_clock::now().time_since_epoch().count();    
@@ -328,20 +277,20 @@ TEST_CASE("Generate 1000 packets and run clustering")
     const auto lExtractedMean = packetLearner.mExtractMean(lMeanOfInterest);
     
     // Ensure that the extracted mean falls into one of the four 'corners'
-    if((0.8 >= lExtractedMean.m_Vector.at(0)) && (0.7 <= lExtractedMean.m_Vector.at(0)) && 
-       (0.8 >= lExtractedMean.m_Vector.at(1)) && (0.7 <= lExtractedMean.m_Vector.at(1)))
+    if((corners[3] >= lExtractedMean.m_Vector.at(0)) && (corners[2] <= lExtractedMean.m_Vector.at(0)) && 
+       (corners[3] >= lExtractedMean.m_Vector.at(1)) && (corners[2] <= lExtractedMean.m_Vector.at(1)))
     {
 	}
-	else if((0.8 >= lExtractedMean.m_Vector.at(0)) && (0.7 <= lExtractedMean.m_Vector.at(0)) && 
-       (0.3 >= lExtractedMean.m_Vector.at(1)) && (0.2 <= lExtractedMean.m_Vector.at(1)))
+	else if((corners[3] >= lExtractedMean.m_Vector.at(0)) && (corners[2] <= lExtractedMean.m_Vector.at(0)) && 
+       (corners[1] >= lExtractedMean.m_Vector.at(1)) && (corners[0] <= lExtractedMean.m_Vector.at(1)))
     {
 	}
-	else if((0.3 >= lExtractedMean.m_Vector.at(0)) && (0.2 <= lExtractedMean.m_Vector.at(0)) && 
-       (0.8 >= lExtractedMean.m_Vector.at(1)) && (0.7 <= lExtractedMean.m_Vector.at(1)))
+	else if((corners[1] >= lExtractedMean.m_Vector.at(0)) && (corners[0] <= lExtractedMean.m_Vector.at(0)) && 
+       (corners[3] >= lExtractedMean.m_Vector.at(1)) && (corners[2] <= lExtractedMean.m_Vector.at(1)))
     {
 	}
-	else if((0.3 >= lExtractedMean.m_Vector.at(0)) && (0.2 <= lExtractedMean.m_Vector.at(0)) && 
-       (0.3 >= lExtractedMean.m_Vector.at(1)) && (0.2 <= lExtractedMean.m_Vector.at(1)))
+	else if((corners[1] >= lExtractedMean.m_Vector.at(0)) && (corners[0] <= lExtractedMean.m_Vector.at(0)) && 
+       (corners[1] >= lExtractedMean.m_Vector.at(1)) && (corners[0] <= lExtractedMean.m_Vector.at(1)))
     {
 	}
 	else

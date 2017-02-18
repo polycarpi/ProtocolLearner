@@ -10,7 +10,7 @@ public:
 	PacketAnalyser(const std::vector<uint16_t>& inVector) : vec{inVector}, m_PacketSize{0}, m_Symbolics{0}, m_Numeric{0}, m_Character{0}
 	{		
 	};
-	void AnalysePacket();
+	void mAnalysePacket();
     
         const std::vector<float> getAnalysis()
         {

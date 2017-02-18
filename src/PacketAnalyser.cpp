@@ -1,6 +1,6 @@
 #include "PacketAnalyser.hpp"
 
-void PacketAnalyser::AnalysePacket()
+void PacketAnalyser::mAnalysePacket()
 {
     for(auto i : vec)
     {
