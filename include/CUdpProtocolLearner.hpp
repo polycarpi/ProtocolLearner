@@ -7,24 +7,28 @@
 #include "CUdpPair.hpp"
 #include "boost/asio.hpp"
 
-
 class CUdpProtocolLearner
 {
 public:
 	void mProcessPacket(const std::vector<uint8_t> aBytesIn)
 	{
-		m_HighToLowUdpPair.mStop();
+		if(m_ExternalStopFlag or (m_HighToLowUdpPair.mGetPacketsSeen() 
+		  + m_LowToHighUdpPair.mGetPacketsSeen() >= m_MaxPacketsToObserve)) 
+		{
+		    m_HighToLowUdpPair.mStop();
+		}
 	}
     CUdpProtocolLearner(CUdpPair& aHighToLowUdpPair,
                         CUdpPair& aLowToHighUdpPair,
                         const std::uint32_t aMaxPacketsToObserve,
-                        const std::uint32_t aMaxTimeToObserve_s)
+                        const std::uint32_t aMaxTimeToObserve_s,
+                        bool& aExternalStopFlag)
                         :
                         m_HighToLowUdpPair(aHighToLowUdpPair), // GCC bug prevents uniform initialisation here...
                         m_LowToHighUdpPair(aLowToHighUdpPair),
                         m_MaxPacketsToObserve{aMaxPacketsToObserve},
                         m_MaxTimeToObserve_s{aMaxTimeToObserve_s},
-                        m_PacketsSeen{0}
+                        m_ExternalStopFlag{aExternalStopFlag}
     {
 		m_HighToLowUdpPair.mSetPacketReceivedCallback(std::bind(&CUdpProtocolLearner::mProcessPacket, this, std::placeholders::_1));
 	}
@@ -37,6 +41,14 @@ public:
 	{
 		return m_HighToLowUdpPair.mGetTotalBytesSeen();
 	}
+	const std::uint32_t mGetPacketsSeenLowToHigh()
+	{
+		return m_LowToHighUdpPair.mGetPacketsSeen();
+	}
+	const std::uint32_t mGetTotalBytesSeenLowToHigh()
+	{
+		return m_LowToHighUdpPair.mGetTotalBytesSeen();
+	}	
 	void mStartListening()
 	{
 		m_HighToLowUdpPair.mStartReceive();
@@ -49,6 +61,6 @@ private:
     CUdpPair& m_LowToHighUdpPair;
     const std::uint32_t m_MaxPacketsToObserve;
     const std::uint32_t m_MaxTimeToObserve_s;
-    std::uint32_t m_PacketsSeen;
+    bool& m_ExternalStopFlag;
 };
 #endif

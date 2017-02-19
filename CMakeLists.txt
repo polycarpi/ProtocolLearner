@@ -13,7 +13,8 @@ set(SOURCES src/main.cpp
             src/PacketAnalyser.cpp
             src/CUdpPair.cpp
             src/CUdpProtocolLearner.cpp
-            src/CUdpSender.cpp)
+            src/CUdpSender.cpp
+            src/CUdpReceiver.cpp)
 
 add_compile_options(-std=c++11)
 

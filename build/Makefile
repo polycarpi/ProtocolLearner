@@ -159,6 +159,30 @@ src/CUdpProtocolLearner.cpp.s:
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpProtocolLearner.cpp.s
 .PHONY : src/CUdpProtocolLearner.cpp.s
 
+src/CUdpReceiver.o: src/CUdpReceiver.cpp.o
+.PHONY : src/CUdpReceiver.o
+
+# target to build an object file
+src/CUdpReceiver.cpp.o:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpReceiver.cpp.o
+.PHONY : src/CUdpReceiver.cpp.o
+
+src/CUdpReceiver.i: src/CUdpReceiver.cpp.i
+.PHONY : src/CUdpReceiver.i
+
+# target to preprocess a source file
+src/CUdpReceiver.cpp.i:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpReceiver.cpp.i
+.PHONY : src/CUdpReceiver.cpp.i
+
+src/CUdpReceiver.s: src/CUdpReceiver.cpp.s
+.PHONY : src/CUdpReceiver.s
+
+# target to generate assembly for a file
+src/CUdpReceiver.cpp.s:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpReceiver.cpp.s
+.PHONY : src/CUdpReceiver.cpp.s
+
 src/CUdpSender.o: src/CUdpSender.cpp.o
 .PHONY : src/CUdpSender.o
 
@@ -270,6 +294,9 @@ help:
 	@echo "... src/CUdpProtocolLearner.o"
 	@echo "... src/CUdpProtocolLearner.i"
 	@echo "... src/CUdpProtocolLearner.s"
+	@echo "... src/CUdpReceiver.o"
+	@echo "... src/CUdpReceiver.i"
+	@echo "... src/CUdpReceiver.s"
 	@echo "... src/CUdpSender.o"
 	@echo "... src/CUdpSender.i"
 	@echo "... src/CUdpSender.s"
