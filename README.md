@@ -1,5 +1,5 @@
 # ProtocolLearner
 
-Learning phase - set up a TCP/UDP socket and act in a 'man-in-the-middle' manner to observe the characteristics of the protocol
-
-Active phase - use the learnt characteristics to configure a diode
+A generic protocol analyser, intended to allow learning of arbitrary protocol 
+state machines.
+Includes a basic k-Means clustering implementation.
