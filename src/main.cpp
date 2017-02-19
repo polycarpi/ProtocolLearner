@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <assert.h>
 #include <chrono>
+#include <thread>
 
 #include "catch.hpp"
 #include "KMeans.hpp"
@@ -14,8 +15,6 @@
 #include "CUdpPair.hpp"
 #include "CUdpProtocolLearner.hpp"
 #include "CUdpSender.hpp"
-
-
 
 using namespace std;
 
@@ -306,29 +305,43 @@ TEST_CASE("Generate 1000 packets and run clustering")
 TEST_CASE("Test basic UDP protocol learner functionality, namely that we can set up a protocol learner and inject packets")
 {
 	
-	const std::uint16_t lHighReceiverPort{4567};
+	const std::uint16_t lHighReceiverPort{10146};
 	const std::uint16_t lLowReceiverPort{10020};
 	const std::uint32_t lBufferSize{1024*1024};
 	
-	CUdpPair UdpPair_HighToLow(std::string("localhost"), std::string("localhost"), lHighReceiverPort, lBufferSize);
-	CUdpPair UdpPair_LowToHigh(std::string("localhost"), std::string("localhost"), lLowReceiverPort, lBufferSize);
+	boost::asio::io_service lMainService;	
+	
+	CUdpPair UdpPair_HighToLow(std::string("127.0.0.1"), std::string("127.0.0.1"), lHighReceiverPort, lBufferSize, lMainService);
+	CUdpPair UdpPair_LowToHigh(std::string("127.0.0.1"), std::string("127.0.0.1"), lLowReceiverPort, lBufferSize, lMainService);
 
     const std::uint32_t lMaxPacketsToObserve{10};
     const std::uint32_t lMaxTimeToObserve_s{3600};
 
-	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, UdpPair_LowToHigh, lMaxPacketsToObserve, lMaxTimeToObserve_s);
+	boost::asio::io_service lUdpProtocolLearnerService;
+	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, 
+	                                       UdpPair_LowToHigh, 
+	                                       lMaxPacketsToObserve, 
+	                                       lMaxTimeToObserve_s);
 	
-	REQUIRE(UdpProtocolLearner.mGetPacketsSeen() == 0);
-	REQUIRE(UdpProtocolLearner.mGetTotalBytesSeen() == 0);
+	REQUIRE(UdpProtocolLearner.mGetPacketsSeenHighToLow() == 0);
+	REQUIRE(UdpProtocolLearner.mGetTotalBytesSeenHighToLow() == 0);
 	
-	CUdpSender UdpSender(std::string("localhost"), lHighReceiverPort);
+	CUdpSender UdpSender(std::string("127.0.0.1"), lHighReceiverPort, lMainService);
 	const std::vector<std::uint8_t> lFrame({0x1A, 0x4C});
+	
+	
+	UdpProtocolLearner.mStartListening();
+	
+	
 	UdpSender.mSend(lFrame);
+	lMainService.run();
+
+	REQUIRE(UdpProtocolLearner.mGetPacketsSeenHighToLow() == 1);
+	REQUIRE(UdpProtocolLearner.mGetTotalBytesSeenHighToLow() == 2);
 	
-	REQUIRE(UdpProtocolLearner.mGetPacketsSeen() == 1);
-	REQUIRE(UdpProtocolLearner.mGetTotalBytesSeen() == 2);	
-	
+	lMainService.stop();
 }
+
 /*
 TEST_CASE("Test that the UDP protocol learner sends through packets unchanged")
 {
@@ -350,47 +363,10 @@ TEST_CASE("Test that the UDP protocol learner sends through packets unchanged")
 	
 }
 */
+
 /*
 int BinaryMain(int c, char * argv[])
 {
-	
-  std::string deviceString;
-  pcap_t * descr;
-  char errorBuffer[PCAP_ERRBUF_SIZE];
-
-  pcap_if_t * device;
-  
-  if(-1 == pcap_findalldevs(&device, errorBuffer))
-  {
-	  std::cerr << "Unable to open any devices" << std::endl;
-  }
-  
-  while(device)
-  {
-	  if(0 == std::string(argv[1]).compare(std::string(device->name)))
-	  {
-		  deviceString = std::string(device->name);
-		  std::cout << "Got " << deviceString << std::endl;
-		  break;
-	  }
-      device = device->next;
-  }
-  
-  descr = pcap_open_live(deviceString.c_str(), BUFSIZ, 0, -1, errorBuffer);
-  if (descr == NULL)
-  {
-      cout << "pcap_open_live() failed: " << errorBuffer << endl;
-      return 1;
-  }
-
-  if (pcap_loop(descr, 0, packetHandler, NULL) < 0)
-  {
-      cout << "pcap_loop() failed: " << pcap_geterr(descr);
-      return 1;
-  }
-  
-
-
   return 0;
 }
 */
