@@ -474,6 +474,8 @@ TEST_CASE("Test that the protocol learner adds the seen packets to a learning en
 	lMainService.run();
 	
 	REQUIRE(UdpProtocolLearner.mGetNumberPacketsInLearningEngine() == 4);
+	
+	delete lStopFlag;
 
 }
 
