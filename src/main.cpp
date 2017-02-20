@@ -17,27 +17,15 @@
 #include "CUdpSender.hpp"
 #include "CUdpReceiver.hpp"
 
-using namespace std;
+#include <boost/thread.hpp>
 
-void packetHandler(u_char * userData, const struct pcap_pkthdr * pkthdr, const u_char * packet)
-{
-    // Update the learning engine
-    std::cout << pkthdr->ts.tv_sec << "." << pkthdr->ts.tv_usec << std::endl;
-    uint length = pkthdr->len;
-    std::vector<uint16_t> lByteVec;
-    for(uint lIt = 0; lIt < length; ++lIt)
-    {
-    	lByteVec.push_back(static_cast<uint16_t>(packet[lIt]));
-    }
-    PacketAnalyser analyser(lByteVec);
-    analyser.mAnalysePacket();
-}
+using namespace std;	
 
 TEST_CASE("Dummy")
 {
     PacketAnalyser analyser({'a'});
     analyser.mAnalysePacket();
-    auto resultsVec = analyser.getAnalysis();
+    auto resultsVec = analyser.mGetAnalysis();
     REQUIRE(1.0f == resultsVec.at(0));
     REQUIRE(0.0f == resultsVec.at(1));
     REQUIRE(0.0f == resultsVec.at(2));
@@ -318,7 +306,9 @@ TEST_CASE("Test basic UDP protocol learner functionality, namely that we can set
     const std::uint32_t lMaxPacketsToObserve{10};
     const std::uint32_t lMaxTimeToObserve_s{3600};
 
-	bool lStopFlag = true;
+    std::atomic<bool> * lStopFlag = new std::atomic<bool>;
+	*lStopFlag = true;
+	
 	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, 
 	                                       UdpPair_LowToHigh, 
 	                                       lMaxPacketsToObserve, 
@@ -334,12 +324,16 @@ TEST_CASE("Test basic UDP protocol learner functionality, namely that we can set
 	UdpProtocolLearner.mStartListening();
 	
 	UdpSender.mSend(lFrame);
-	lMainService.run();
+	
+	boost::thread t(boost::bind(&boost::asio::io_service::run, &lMainService));
+	t.join();
 
 	REQUIRE(UdpProtocolLearner.mGetPacketsSeenHighToLow() == 1);
 	REQUIRE(UdpProtocolLearner.mGetTotalBytesSeenHighToLow() == 2);
 	REQUIRE(UdpProtocolLearner.mGetPacketsSeenLowToHigh() == 0);
 	REQUIRE(UdpProtocolLearner.mGetTotalBytesSeenLowToHigh() == 0);	
+
+    delete lStopFlag;
 	
 }
 
@@ -358,7 +352,9 @@ TEST_CASE("Test that the protocol learner terminates after observing the max num
     const std::uint32_t lMaxPacketsToObserve{1};
     const std::uint32_t lMaxTimeToObserve_s{3600};
 
-	bool lStopFlag = false;
+    std::atomic<bool> * lStopFlag = new std::atomic<bool>;
+	*lStopFlag = false;
+	
 	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, 
 	                                       UdpPair_LowToHigh, 
 	                                       lMaxPacketsToObserve, 
@@ -374,13 +370,17 @@ TEST_CASE("Test that the protocol learner terminates after observing the max num
 	UdpProtocolLearner.mStartListening();
 	
 	UdpSender.mSend(lFrame);
-	lMainService.run();
-
-	REQUIRE(UdpProtocolLearner.mGetPacketsSeenHighToLow() == 1);
-	REQUIRE(UdpProtocolLearner.mGetTotalBytesSeenHighToLow() == 2);
+	UdpSender.mSend(lFrame);
+	
+	boost::thread t(boost::bind(&boost::asio::io_service::run, &lMainService));
+	t.join();
+	
+	REQUIRE(UdpProtocolLearner.mGetPacketsSeenHighToLow() == 2);
+	REQUIRE(UdpProtocolLearner.mGetTotalBytesSeenHighToLow() == 4);
 	REQUIRE(UdpProtocolLearner.mGetPacketsSeenLowToHigh() == 0);
 	REQUIRE(UdpProtocolLearner.mGetTotalBytesSeenLowToHigh() == 0);	
 
+	delete lStopFlag;
 	
 }
 
@@ -397,17 +397,17 @@ TEST_CASE("Test that the protocol learner passes the packets through to a receiv
 	CUdpPair UdpPair_HighToLow(std::string("127.0.0.1"), std::string("127.0.0.1"), lHighReceiverPort, lFinalDestinationPort, lBufferSize, lMainService);
 	CUdpPair UdpPair_LowToHigh(std::string("127.0.0.1"), std::string("127.0.0.1"), lLowReceiverPort, 0, lBufferSize, lMainService);
 
-    const std::uint32_t lMaxPacketsToObserve{4};
+    const std::uint32_t lMaxPacketsToObserve{10};
     const std::uint32_t lMaxTimeToObserve_s{3600};
 
-	bool lStopFlag = false;
+    std::atomic<bool> * lStopFlag = new std::atomic<bool>;
+	*lStopFlag = true;
+
 	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, 
 	                                       UdpPair_LowToHigh, 
 	                                       lMaxPacketsToObserve, 
 	                                       lMaxTimeToObserve_s,
 	                                       lStopFlag);
-	
-
 	
 	CUdpSender UdpSender(std::string("127.0.0.1"), lHighReceiverPort, lMainService);
 	const std::vector<std::uint8_t> lFrame({0x1A, 0x4C});
@@ -422,14 +422,59 @@ TEST_CASE("Test that the protocol learner passes the packets through to a receiv
 	{
 	    UdpSender.mSend(lFrame);
 	}
+		
+	boost::thread t(boost::bind(&boost::asio::io_service::run, &lMainService));
+	*lStopFlag = true;
+	t.join();
+	
+	REQUIRE(UdpReceiver.mGetPacketsSeen() == 1);
+	REQUIRE(UdpReceiver.mGetTotalBytesSeen() == 8);	
+	
+	delete lStopFlag;
+
+}
+
+TEST_CASE("Test that the protocol learner adds the seen packets to a learning engine")
+{
+	const std::uint16_t lHighReceiverPort{10146};
+	const std::uint16_t lLowReceiverPort{10020};
+	const std::uint16_t lFinalDestinationPort{8888};
+	const std::uint32_t lBufferSize{1024*1024};
+	
+	boost::asio::io_service lMainService;	
+	
+	CUdpPair UdpPair_HighToLow(std::string("127.0.0.1"), std::string("127.0.0.1"), lHighReceiverPort, lFinalDestinationPort, lBufferSize, lMainService);
+	CUdpPair UdpPair_LowToHigh(std::string("127.0.0.1"), std::string("127.0.0.1"), lLowReceiverPort, 0, lBufferSize, lMainService);
+
+    const std::uint32_t lMaxPacketsToObserve{4};
+    const std::uint32_t lMaxTimeToObserve_s{3600};
+
+    std::atomic<bool> * lStopFlag = new std::atomic<bool>;
+	*lStopFlag = true;
+
+	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, 
+	                                       UdpPair_LowToHigh, 
+	                                       lMaxPacketsToObserve, 
+	                                       lMaxTimeToObserve_s,
+	                                       lStopFlag);
+	
+	CUdpSender UdpSender(std::string("127.0.0.1"), lHighReceiverPort, lMainService);
+	const std::vector<std::uint8_t> lFrame({0x1A, 0x4C});
+	
+	UdpProtocolLearner.mStartListening();
+	
+	CUdpReceiver UdpReceiver(std::string("127.0.0.1"), lFinalDestinationPort, lMainService);
+	REQUIRE(UdpReceiver.mGetPacketsSeen() == 0);
+	REQUIRE(UdpReceiver.mGetTotalBytesSeen() == 0);
+	
+	for(uint32_t l = 0; l <= lMaxPacketsToObserve; ++l)
+	{
+	    UdpSender.mSend(lFrame);
+	}
 	lMainService.run();
 	
-	REQUIRE(UdpReceiver.mGetPacketsSeen() == 4);
-	REQUIRE(UdpReceiver.mGetTotalBytesSeen() == 8);	
+	REQUIRE(UdpProtocolLearner.mGetNumberPacketsInLearningEngine() == 4);
 
-
-
-	
 }
 
 /*

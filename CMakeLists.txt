@@ -19,4 +19,4 @@ set(SOURCES src/main.cpp
 add_compile_options(-std=c++11)
 
 add_executable(tests ${SOURCES})
-TARGET_LINK_LIBRARIES(tests pcap pthread boost_system)
+TARGET_LINK_LIBRARIES(tests pcap pthread boost_system boost_thread)

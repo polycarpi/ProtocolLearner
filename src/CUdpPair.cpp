@@ -32,9 +32,11 @@ void CUdpPair::handle_receive_from(const boost::system::error_code& error,
 {
 	++m_PacketsSeen;
 	m_TotalBytesSeen += bytes_recvd;
+	
 	m_PacketReceivedCallback(std::vector<uint8_t>(m_ReceiveBuffer.begin(), m_ReceiveBuffer.begin() + bytes_recvd));
 	
     boost::system::error_code ignored_error;	
+    
 	m_OutboundSocket->send_to(boost::asio::buffer(m_ReceiveBuffer, 
 	                          bytes_recvd), 
 	                          *m_FinalEndpoint, 
