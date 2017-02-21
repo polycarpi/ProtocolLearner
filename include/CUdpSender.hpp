@@ -33,7 +33,9 @@ public:
 	}
     void mSend(const std::vector<std::uint8_t>& aVecToSend)
     {
+		//std::cerr << "UDP sender sending " << aVecToSend.size() << " bytes to " << m_ReceiverEndpoint << std::endl;
         m_Socket->send_to(boost::asio::buffer(aVecToSend), m_ReceiverEndpoint);	
+        //std::cerr << "Synchronous send complete" << std::endl;
 	}
 private:
     boost::asio::io_service& m_Service;

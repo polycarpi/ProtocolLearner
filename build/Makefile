@@ -159,6 +159,30 @@ src/CUdpProtocolLearner.cpp.s:
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpProtocolLearner.cpp.s
 .PHONY : src/CUdpProtocolLearner.cpp.s
 
+src/CUdpProtocolLearnerTests.o: src/CUdpProtocolLearnerTests.cpp.o
+.PHONY : src/CUdpProtocolLearnerTests.o
+
+# target to build an object file
+src/CUdpProtocolLearnerTests.cpp.o:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpProtocolLearnerTests.cpp.o
+.PHONY : src/CUdpProtocolLearnerTests.cpp.o
+
+src/CUdpProtocolLearnerTests.i: src/CUdpProtocolLearnerTests.cpp.i
+.PHONY : src/CUdpProtocolLearnerTests.i
+
+# target to preprocess a source file
+src/CUdpProtocolLearnerTests.cpp.i:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpProtocolLearnerTests.cpp.i
+.PHONY : src/CUdpProtocolLearnerTests.cpp.i
+
+src/CUdpProtocolLearnerTests.s: src/CUdpProtocolLearnerTests.cpp.s
+.PHONY : src/CUdpProtocolLearnerTests.s
+
+# target to generate assembly for a file
+src/CUdpProtocolLearnerTests.cpp.s:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpProtocolLearnerTests.cpp.s
+.PHONY : src/CUdpProtocolLearnerTests.cpp.s
+
 src/CUdpReceiver.o: src/CUdpReceiver.cpp.o
 .PHONY : src/CUdpReceiver.o
 
@@ -231,6 +255,30 @@ src/KMeans.cpp.s:
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/KMeans.cpp.s
 .PHONY : src/KMeans.cpp.s
 
+src/KMeansTests.o: src/KMeansTests.cpp.o
+.PHONY : src/KMeansTests.o
+
+# target to build an object file
+src/KMeansTests.cpp.o:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/KMeansTests.cpp.o
+.PHONY : src/KMeansTests.cpp.o
+
+src/KMeansTests.i: src/KMeansTests.cpp.i
+.PHONY : src/KMeansTests.i
+
+# target to preprocess a source file
+src/KMeansTests.cpp.i:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/KMeansTests.cpp.i
+.PHONY : src/KMeansTests.cpp.i
+
+src/KMeansTests.s: src/KMeansTests.cpp.s
+.PHONY : src/KMeansTests.s
+
+# target to generate assembly for a file
+src/KMeansTests.cpp.s:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/KMeansTests.cpp.s
+.PHONY : src/KMeansTests.cpp.s
+
 src/PacketAnalyser.o: src/PacketAnalyser.cpp.o
 .PHONY : src/PacketAnalyser.o
 
@@ -294,6 +342,9 @@ help:
 	@echo "... src/CUdpProtocolLearner.o"
 	@echo "... src/CUdpProtocolLearner.i"
 	@echo "... src/CUdpProtocolLearner.s"
+	@echo "... src/CUdpProtocolLearnerTests.o"
+	@echo "... src/CUdpProtocolLearnerTests.i"
+	@echo "... src/CUdpProtocolLearnerTests.s"
 	@echo "... src/CUdpReceiver.o"
 	@echo "... src/CUdpReceiver.i"
 	@echo "... src/CUdpReceiver.s"
@@ -303,6 +354,9 @@ help:
 	@echo "... src/KMeans.o"
 	@echo "... src/KMeans.i"
 	@echo "... src/KMeans.s"
+	@echo "... src/KMeansTests.o"
+	@echo "... src/KMeansTests.i"
+	@echo "... src/KMeansTests.s"
 	@echo "... src/PacketAnalyser.o"
 	@echo "... src/PacketAnalyser.i"
 	@echo "... src/PacketAnalyser.s"

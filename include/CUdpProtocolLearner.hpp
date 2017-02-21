@@ -16,36 +16,31 @@ public:
 	void mProcessPacket(const std::vector<uint8_t> aBytesIn)
 	{
 		
-		PacketAnalyser lPacketAnalyser(aBytesIn);
-		lPacketAnalyser.mAnalysePacket();
-		
-		const auto lAnalysis = lPacketAnalyser.mGetAnalysis();
-		
-		m_MessageClassificationEngine.mSubmit(lAnalysis);
-		
-		if(m_ExternalStopFlag->load(std::memory_order_relaxed) or (m_HighToLowUdpPair.mGetPacketsSeen() 
-		  + m_LowToHighUdpPair.mGetPacketsSeen() > m_MaxPacketsToObserve)) 
+		if(m_HighToLowUdpPair.mGetPacketsSeen() 
+		  + m_LowToHighUdpPair.mGetPacketsSeen() <= m_MaxPacketsToObserve)
 		{
-		    m_HighToLowUdpPair.mStop();
+			PacketAnalyser lPacketAnalyser(aBytesIn);
+			lPacketAnalyser.mAnalysePacket();
+			
+			const auto lAnalysis = lPacketAnalyser.mGetAnalysis();
+			m_MessageClassificationEngine.mSubmit(lAnalysis);			
 		}
 	}
 	
 	const std::uint32_t mGetNumberPacketsInLearningEngine()
 	{
-		return 0;
+		return m_MessageClassificationEngine.mGetNumPoints();
 	}
 	
     CUdpProtocolLearner(CUdpPair& aHighToLowUdpPair,
                         CUdpPair& aLowToHighUdpPair,
                         const std::uint32_t aMaxPacketsToObserve,
-                        const std::uint32_t aMaxTimeToObserve_s,
-                        std::atomic<bool> * aExternalStopFlag)
+                        const std::uint32_t aMaxTimeToObserve_s)
                         :
                         m_HighToLowUdpPair(aHighToLowUdpPair), // GCC bug prevents uniform initialisation here...
                         m_LowToHighUdpPair(aLowToHighUdpPair),
                         m_MaxPacketsToObserve{aMaxPacketsToObserve},
                         m_MaxTimeToObserve_s{aMaxTimeToObserve_s},
-                        m_ExternalStopFlag{aExternalStopFlag},
                         m_MessageClassificationEngine(2)
     {
 		m_HighToLowUdpPair.mSetPacketReceivedCallback(std::bind(&CUdpProtocolLearner::mProcessPacket, this, std::placeholders::_1));
@@ -79,7 +74,6 @@ private:
     CUdpPair& m_LowToHighUdpPair;
     const std::uint32_t m_MaxPacketsToObserve;
     const std::uint32_t m_MaxTimeToObserve_s;
-    std::atomic<bool> * m_ExternalStopFlag;
     KMeans<float> m_MessageClassificationEngine;
 };
 #endif

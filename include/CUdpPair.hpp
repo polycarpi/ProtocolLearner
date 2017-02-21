@@ -18,13 +18,11 @@ public:
              const std::string& aIpAddressToSendTo,
              const std::uint16_t& aPortToListenOn,
              const std::uint16_t& aPortToSendTo,
-             const std::uint32_t& aBufferSize,
              boost::asio::io_service& aIoService) : 
              m_IpAddressToListenOn{aIpAddressToListenOn},
              m_IpAddressToSendTo{aIpAddressToSendTo},
              m_PortToReceiveOn{aPortToListenOn},
              m_PortToSendTo{aPortToSendTo},
-             m_BufferSize{aBufferSize},
              m_IoService(aIoService),
              m_PacketsSeen{0},
              m_TotalBytesSeen{0}
@@ -32,7 +30,7 @@ public:
 		m_InboundSocket = new boost::asio::ip::udp::socket(m_IoService);
 		m_LocalEndpoint = new boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(m_IpAddressToListenOn), m_PortToReceiveOn);
         m_InboundSocket->open(m_LocalEndpoint->protocol());
-        m_InboundSocket->set_option(boost::asio::ip::udp::socket::reuse_address(true));
+        //m_InboundSocket->set_option(boost::asio::ip::udp::socket::reuse_address(true));
         m_InboundSocket->bind(*m_LocalEndpoint);
         
 		m_OutboundSocket = new boost::asio::ip::udp::socket(m_IoService);
@@ -58,7 +56,6 @@ private:
     const std::string m_IpAddressToSendTo;
     const std::uint16_t m_PortToReceiveOn;
     const std::uint16_t m_PortToSendTo;
-    std::uint32_t m_BufferSize;
     std::function<void(const std::vector<uint8_t>)> m_PacketReceivedCallback;
     boost::asio::io_service& m_IoService;
     boost::asio::ip::udp::socket * m_InboundSocket;

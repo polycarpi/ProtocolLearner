@@ -199,7 +199,7 @@ public:
     const uint16_t mGetNumPoints() const
 	{
 	    return m_PointVector.size();
-	}    
+	}
     
     friend std::ostream& operator<<(std::ostream& os, const KMeans<float>& ca);
 
