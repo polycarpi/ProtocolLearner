@@ -10,7 +10,9 @@
 #include "boost/bind.hpp"
 #include <boost/array.hpp>
 
-class CUdpReceiver
+#include "CUdpSink.hpp"
+
+class CUdpReceiver : public CUdpSink
 {
 public:
     CUdpReceiver(const std::string& aAddressToReceiveOn, 
@@ -24,7 +26,6 @@ public:
     {
 		m_InboundSocket = new boost::asio::ip::udp::socket(m_IoService, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), m_PortToReceiveOn));
         
-        mStartReceive();
       
 	}
 	~CUdpReceiver()
@@ -42,23 +43,22 @@ public:
 		return m_TotalBytesSeen;
 	}
 	
-	
-	
-private:
-
-	void mStartReceive()
+	void mStartReceive() override
 	{		
 		m_InboundSocket->async_receive_from(boost::asio::buffer(m_ReceiveBuffer), m_RemoteEndpoint,
 		  boost::bind(&CUdpReceiver::handle_receive_from, this, boost::asio::placeholders::error,
 		  boost::asio::placeholders::bytes_transferred)); 
-	}
+	}	
+	
+private:
+
+
 
 	void handle_receive_from(const boost::system::error_code& error,
 	  size_t bytes_recvd)
 	{
 		++m_PacketsSeen;
 		m_TotalBytesSeen += bytes_recvd;
-		//m_PacketReceivedCallback(std::vector<uint8_t>(m_ReceiveBuffer.begin(), m_ReceiveBuffer.begin() + bytes_recvd));
 		
 		mStartReceive();
 	}	

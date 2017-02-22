@@ -9,6 +9,7 @@
 #include "CUdpProtocolLearner.hpp"
 #include "CUdpSender.hpp"
 #include "CUdpReceiver.hpp"
+#include "CUdpTestEchoServer.hpp"
 
 TEST_CASE("Test basic UDP protocol learner functionality, namely that we can set up a protocol learner and inject packets")
 {
@@ -224,7 +225,9 @@ TEST_CASE("Set up an echo-increment server and a UDP client. Check that the prot
 		std::transform(inVec.begin(), inVec.end(), inVec.begin(), [&](std::uint8_t lVal){++lVal;});
 	};
 	
-	CUdpTestEchoServer UdpTestServer(std::string("127.0.0.1"), lLowServerPort, lMainService);
+	boost::asio::io_service lMainService;	
+	
+	CUdpTestEchoServer UdpTestServer(std::string("127.0.0.1"), lLowServerPort, lMainService, lEchoFunctionIncrementAllBytes);
 		
 	CUdpPair UdpPair_HighToLow(std::string("127.0.0.1"), std::string("127.0.0.1"), lDiodePortHighToLow, lLowServerPort, lMainService);
 	CUdpPair UdpPair_LowToHigh(std::string("127.0.0.1"), std::string("127.0.0.1"), lDiodePortLowToHigh, lHighDestinationDummy, lMainService);	

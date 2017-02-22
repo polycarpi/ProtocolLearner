@@ -231,6 +231,30 @@ src/CUdpSender.cpp.s:
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpSender.cpp.s
 .PHONY : src/CUdpSender.cpp.s
 
+src/CUdpTestEchoServer.o: src/CUdpTestEchoServer.cpp.o
+.PHONY : src/CUdpTestEchoServer.o
+
+# target to build an object file
+src/CUdpTestEchoServer.cpp.o:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpTestEchoServer.cpp.o
+.PHONY : src/CUdpTestEchoServer.cpp.o
+
+src/CUdpTestEchoServer.i: src/CUdpTestEchoServer.cpp.i
+.PHONY : src/CUdpTestEchoServer.i
+
+# target to preprocess a source file
+src/CUdpTestEchoServer.cpp.i:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpTestEchoServer.cpp.i
+.PHONY : src/CUdpTestEchoServer.cpp.i
+
+src/CUdpTestEchoServer.s: src/CUdpTestEchoServer.cpp.s
+.PHONY : src/CUdpTestEchoServer.s
+
+# target to generate assembly for a file
+src/CUdpTestEchoServer.cpp.s:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpTestEchoServer.cpp.s
+.PHONY : src/CUdpTestEchoServer.cpp.s
+
 src/KMeans.o: src/KMeans.cpp.o
 .PHONY : src/KMeans.o
 
@@ -351,6 +375,9 @@ help:
 	@echo "... src/CUdpSender.o"
 	@echo "... src/CUdpSender.i"
 	@echo "... src/CUdpSender.s"
+	@echo "... src/CUdpTestEchoServer.o"
+	@echo "... src/CUdpTestEchoServer.i"
+	@echo "... src/CUdpTestEchoServer.s"
 	@echo "... src/KMeans.o"
 	@echo "... src/KMeans.i"
 	@echo "... src/KMeans.s"
