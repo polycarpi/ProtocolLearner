@@ -1,6 +1,7 @@
 #include <boost/thread.hpp>
 #include <chrono>
 #include <thread>
+#include <algorithm>
 
 #include "catch.hpp"
 #include "KMeans.hpp"
@@ -107,8 +108,8 @@ TEST_CASE("Test that the UDP receiver works")
 	
 	const std::vector<std::uint8_t> lFrame({0x1A, 0x4C});
 	
+	UdpSender.mSend(lFrame);	
 	boost::thread t(boost::bind(&boost::asio::io_service::run, &lMainService));
-	UdpSender.mSend(lFrame);
     std::this_thread::sleep_for (std::chrono::milliseconds(100));
 	lMainService.stop();
 	t.join();
@@ -213,16 +214,18 @@ TEST_CASE("Test that the protocol learner adds the seen packets to a learning en
 }
 
 TEST_CASE("Set up an echo-increment server and a UDP client. Check that the protocol learner "
-           "can observe both streams and report statistics accordingly")
+           "fires the echo server callback")
 {
 	const std::uint32_t lLowServerPort = 10068;
 	const std::uint32_t lDiodePortHighToLow = 10070;
 	const std::uint32_t lDiodePortLowToHigh = 10071;
 	const std::uint32_t lHighDestinationDummy = 10072;
 	
-	auto lEchoFunctionIncrementAllBytes = [](const std::vector<std::uint8_t>& inVec)
-	{
-		std::transform(inVec.begin(), inVec.end(), inVec.begin(), [&](std::uint8_t lVal){++lVal;});
+	bool callBackWasFired = false;
+	
+	auto lEchoFunctionIncrementAllBytes = [&](const std::vector<std::uint8_t> inVec)
+	{	
+		callBackWasFired = true;
 	};
 	
 	boost::asio::io_service lMainService;	
@@ -238,18 +241,23 @@ TEST_CASE("Set up an echo-increment server and a UDP client. Check that the prot
 	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, 
 	                                       UdpPair_LowToHigh, 
 	                                       lMaxPacketsToObserve, 
-	                                       lMaxTimeToObserve_s);	
+	                                       lMaxTimeToObserve_s);
+	                                       
+	UdpProtocolLearner.mStartListening();
 
-	CUdpSender UdpSender(std::string("127.0.0.1"), lHighReceiverPort, lMainService);
+	CUdpSender UdpSender(std::string("127.0.0.1"), lDiodePortHighToLow, lMainService);
 
 	const std::vector<std::uint8_t> lFrame({0x1A, 0x4C});
 
 	UdpSender.mSend(lFrame);
+	
+	REQUIRE(!callBackWasFired);
 	
 	boost::thread t(boost::bind(&boost::asio::io_service::run, &lMainService));
     std::this_thread::sleep_for (std::chrono::milliseconds(100));	
     lMainService.stop();    
     t.join();
 	
-    REQUIRE(UdpProtocolLearner.mGetNumberPacketsInLearningEngine() == 2);   
+    REQUIRE(callBackWasFired);
 }
+

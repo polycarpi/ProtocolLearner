@@ -8,28 +8,24 @@ class CUdpSource
 {
 public:
 
-    CUdpSource(boost::asio::io_service& aService) : m_Service(aService)
+    //CUdpSource(boost::asio::io_service& aService) : m_IoService(aService)
+    CUdpSource()
     {
-        m_Socket = new boost::asio::ip::udp::socket(m_Service);
-        m_Socket->open(boost::asio::ip::udp::v4());		
+       // m_Socket = new boost::asio::ip::udp::socket(m_IoService);
+       // m_Socket->open(boost::asio::ip::udp::v4());		
 	}
 
-    void mSend(const std::vector<std::uint8_t>& aVecToSend)
-    {
-        m_Socket->send_to(boost::asio::buffer(aVecToSend), m_RemoteEndpointToSendTo);	
-	}
+    virtual void mSend(const std::vector<std::uint8_t>& aVecToSend)=0;
 	
 	~CUdpSource()
 	{
-		m_Socket->close();
-		delete m_Socket;		
+		//m_Socket->close();
+		//delete m_Socket;		
 	}
 	
 protected:
-    boost::asio::ip::udp::endpoint m_RemoteEndpointToSendTo;
-    boost::asio::ip::udp::socket * m_Socket;
-    boost::asio::io_service& m_Service;
-
+    //boost::asio::ip::udp::socket * m_Socket;
+    //boost::asio::io_service& m_IoService;
 };
 
 #endif

@@ -16,16 +16,17 @@ class CUdpReceiver : public CUdpSink
 {
 public:
     CUdpReceiver(const std::string& aAddressToReceiveOn, 
-               const std::uint16_t aPortToReceiveOn,
-               boost::asio::io_service& aIoService) : 
-               m_AddressToReceiveOn{aAddressToReceiveOn},
-               m_PortToReceiveOn{aPortToReceiveOn},
-               m_IoService(aIoService),
-               m_PacketsSeen{0},
-               m_TotalBytesSeen{0}
+                 const std::uint16_t aPortToReceiveOn,
+                 boost::asio::io_service& aIoService) : 
+                 CUdpSink(aAddressToReceiveOn, aPortToReceiveOn),
+                 m_InboundSocket(nullptr),
+                 m_PacketsSeen(0),
+                 m_TotalBytesSeen(0),                
+                 m_IoService(aIoService)
+
     {
 		m_InboundSocket = new boost::asio::ip::udp::socket(m_IoService, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), m_PortToReceiveOn));
-        
+        mStartReceive();
       
 	}
 	~CUdpReceiver()
@@ -63,14 +64,13 @@ private:
 		mStartReceive();
 	}	
 
-    boost::asio::io_service& m_IoService;
-    const std::string m_AddressToReceiveOn;
-    const std::uint16_t m_PortToReceiveOn;
     boost::asio::ip::udp::socket * m_InboundSocket;
     std::uint32_t m_PacketsSeen;
     std::uint32_t m_TotalBytesSeen;
-    boost::array<char, 10> m_ReceiveBuffer;
+    boost::asio::io_service& m_IoService;
+    boost::array<char, 10> m_ReceiveBuffer;  
     boost::asio::ip::udp::endpoint m_RemoteEndpoint;
+    
     
 };
 
