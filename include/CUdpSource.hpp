@@ -9,7 +9,9 @@ class CUdpSource
 public:
 
     //CUdpSource(boost::asio::io_service& aService) : m_IoService(aService)
-    CUdpSource()
+    CUdpSource(const std::string& aAddressToSendTo, const std::uint16_t aPortToSendTo) :
+      m_AddressToSendTo(aAddressToSendTo),
+      m_PortToSendTo(aPortToSendTo)
     {
        // m_Socket = new boost::asio::ip::udp::socket(m_IoService);
        // m_Socket->open(boost::asio::ip::udp::v4());		
@@ -26,6 +28,8 @@ public:
 protected:
     //boost::asio::ip::udp::socket * m_Socket;
     //boost::asio::io_service& m_IoService;
+	const std::string m_AddressToSendTo;
+    const std::uint16_t m_PortToSendTo;
 };
 
 #endif

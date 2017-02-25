@@ -17,13 +17,13 @@ public:
     CUdpSender(const std::string& aAddressToSendTo, 
                const std::uint16_t aPortToSendTo,
                boost::asio::io_service& aIoService) : 
-               m_AddressToSendTo{aAddressToSendTo},
-               m_PortToSendTo{aPortToSendTo},
-               m_IoService(aIoService)
+               m_IoService(aIoService),
+               CUdpSource(aAddressToSendTo, aPortToSendTo)
     {
         boost::asio::ip::udp::resolver resolver(m_IoService);	
         boost::asio::ip::udp::resolver::query query(boost::asio::ip::udp::v4(), m_AddressToSendTo, std::to_string(m_PortToSendTo));
         m_RemoteEndpointToSendTo = *resolver.resolve(query); 
+        
         m_OutboundSocket = new boost::asio::ip::udp::socket(m_IoService);
         m_OutboundSocket->open(boost::asio::ip::udp::v4());        
 	}
@@ -37,8 +37,6 @@ public:
 	}	
 	
 private:
-    const std::string m_AddressToSendTo;
-    const std::uint16_t m_PortToSendTo;
     boost::asio::io_service& m_IoService;
 	boost::asio::ip::udp::endpoint m_RemoteEndpointToSendTo;    
 	boost::asio::ip::udp::socket * m_OutboundSocket;

@@ -44,6 +44,7 @@ public:
                         m_MessageClassificationEngine(2)
     {
 		m_HighToLowUdpPair.mSetPacketReceivedCallback(std::bind(&CUdpProtocolLearner::mProcessPacket, this, std::placeholders::_1));
+		m_LowToHighUdpPair.mSetPacketReceivedCallback(std::bind(&CUdpProtocolLearner::mProcessPacket, this, std::placeholders::_1));
 	}
 	
 	const std::uint32_t mGetPacketsSeenHighToLow()
