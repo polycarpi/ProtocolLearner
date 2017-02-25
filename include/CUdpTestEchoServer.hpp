@@ -45,7 +45,6 @@ public:
 		               
     void mSend(const std::vector<std::uint8_t>& aVecToSend) override
     {
-		std::cerr << m_RemoteEndpointToReplyTo << std::endl;
         m_OutboundSocket.send_to(boost::asio::buffer(aVecToSend), m_RemoteEndpointToReplyTo);	
 	}
 	~CUdpTestEchoServer()

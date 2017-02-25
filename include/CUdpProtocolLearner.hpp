@@ -25,6 +25,15 @@ public:
 			const auto lAnalysis = lPacketAnalyser.mGetAnalysis();
 			m_MessageClassificationEngine.mSubmit(lAnalysis);			
 		}
+		
+		if(!m_DownwardTrafficSeen)
+		{
+			std::cerr << "Attempting to set outbound port and socket" << std::endl;
+			m_LowToHighUdpPair.mSetOutboundPortAndOpenSocket(m_HighToLowUdpPair.mGetPortOfClient());
+			std::cerr << "Set the destination port for the upward sender to " << m_HighToLowUdpPair.mGetPortOfClient() << std::endl;
+			m_DownwardTrafficSeen = true;
+		}
+		
 	}
 	
 	const std::uint32_t mGetNumberPacketsInLearningEngine()
@@ -41,7 +50,8 @@ public:
                         m_LowToHighUdpPair(aLowToHighUdpPair),
                         m_MaxPacketsToObserve{aMaxPacketsToObserve},
                         m_MaxTimeToObserve_s{aMaxTimeToObserve_s},
-                        m_MessageClassificationEngine(2)
+                        m_MessageClassificationEngine(2),
+                        m_DownwardTrafficSeen(false)
     {
 		m_HighToLowUdpPair.mSetPacketReceivedCallback(std::bind(&CUdpProtocolLearner::mProcessPacket, this, std::placeholders::_1));
 		m_LowToHighUdpPair.mSetPacketReceivedCallback(std::bind(&CUdpProtocolLearner::mProcessPacket, this, std::placeholders::_1));
@@ -76,5 +86,6 @@ private:
     const std::uint32_t m_MaxPacketsToObserve;
     const std::uint32_t m_MaxTimeToObserve_s;
     KMeans<float> m_MessageClassificationEngine;
+    bool m_DownwardTrafficSeen;
 };
 #endif

@@ -30,16 +30,13 @@ const std::uint32_t CUdpPair::mGetTotalBytesSeen()
 void CUdpPair::handle_receive_from(const boost::system::error_code& error,
   size_t bytes_recvd)
 {
-    //std::cerr << "UDP pair handle_receive_from received " << bytes_recvd << " bytes from " << m_RemoteEndpoint << std::endl;
 	++m_PacketsSeen;
 	m_TotalBytesSeen += bytes_recvd;
-	
+	std::cerr << "Got " << bytes_recvd << std::endl;
 	m_PacketReceivedCallback(std::vector<uint8_t>(m_ReceiveBuffer.begin(), m_ReceiveBuffer.begin() + bytes_recvd));
-	
-	//std::cerr << "UDP pair forwarding " << bytes_recvd << " bytes to " << *m_FinalEndpoint << std::endl;
 	const auto lTempVec = std::vector<uint8_t>(m_ReceiveBuffer.begin(), m_ReceiveBuffer.begin() + bytes_recvd);
+	std::cerr << "Sending " << bytes_recvd << " to " << *m_FinalEndpoint << std::endl;
 	m_OutboundSocket->send_to(boost::asio::buffer(lTempVec), *m_FinalEndpoint);
-	//std::cerr << "Forwarded " << std::endl;
 
 	mStartReceive();
 }	

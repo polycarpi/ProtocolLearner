@@ -111,6 +111,30 @@ tests/fast:
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/build
 .PHONY : tests/fast
 
+src/CUdpClient.o: src/CUdpClient.cpp.o
+.PHONY : src/CUdpClient.o
+
+# target to build an object file
+src/CUdpClient.cpp.o:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpClient.cpp.o
+.PHONY : src/CUdpClient.cpp.o
+
+src/CUdpClient.i: src/CUdpClient.cpp.i
+.PHONY : src/CUdpClient.i
+
+# target to preprocess a source file
+src/CUdpClient.cpp.i:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpClient.cpp.i
+.PHONY : src/CUdpClient.cpp.i
+
+src/CUdpClient.s: src/CUdpClient.cpp.s
+.PHONY : src/CUdpClient.s
+
+# target to generate assembly for a file
+src/CUdpClient.cpp.s:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpClient.cpp.s
+.PHONY : src/CUdpClient.cpp.s
+
 src/CUdpPair.o: src/CUdpPair.cpp.o
 .PHONY : src/CUdpPair.o
 
@@ -206,30 +230,6 @@ src/CUdpReceiver.s: src/CUdpReceiver.cpp.s
 src/CUdpReceiver.cpp.s:
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpReceiver.cpp.s
 .PHONY : src/CUdpReceiver.cpp.s
-
-src/CUdpSender.o: src/CUdpSender.cpp.o
-.PHONY : src/CUdpSender.o
-
-# target to build an object file
-src/CUdpSender.cpp.o:
-	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpSender.cpp.o
-.PHONY : src/CUdpSender.cpp.o
-
-src/CUdpSender.i: src/CUdpSender.cpp.i
-.PHONY : src/CUdpSender.i
-
-# target to preprocess a source file
-src/CUdpSender.cpp.i:
-	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpSender.cpp.i
-.PHONY : src/CUdpSender.cpp.i
-
-src/CUdpSender.s: src/CUdpSender.cpp.s
-.PHONY : src/CUdpSender.s
-
-# target to generate assembly for a file
-src/CUdpSender.cpp.s:
-	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpSender.cpp.s
-.PHONY : src/CUdpSender.cpp.s
 
 src/CUdpTestEchoServer.o: src/CUdpTestEchoServer.cpp.o
 .PHONY : src/CUdpTestEchoServer.o
@@ -360,6 +360,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... tests"
+	@echo "... src/CUdpClient.o"
+	@echo "... src/CUdpClient.i"
+	@echo "... src/CUdpClient.s"
 	@echo "... src/CUdpPair.o"
 	@echo "... src/CUdpPair.i"
 	@echo "... src/CUdpPair.s"
@@ -372,9 +375,6 @@ help:
 	@echo "... src/CUdpReceiver.o"
 	@echo "... src/CUdpReceiver.i"
 	@echo "... src/CUdpReceiver.s"
-	@echo "... src/CUdpSender.o"
-	@echo "... src/CUdpSender.i"
-	@echo "... src/CUdpSender.s"
 	@echo "... src/CUdpTestEchoServer.o"
 	@echo "... src/CUdpTestEchoServer.i"
 	@echo "... src/CUdpTestEchoServer.s"

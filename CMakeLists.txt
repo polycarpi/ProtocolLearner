@@ -13,7 +13,7 @@ set(SOURCES src/main.cpp
             src/PacketAnalyser.cpp
             src/CUdpPair.cpp
             src/CUdpProtocolLearner.cpp
-            src/CUdpSender.cpp
+            src/CUdpClient.cpp
             src/CUdpReceiver.cpp
             src/KMeansTests.cpp
             src/CUdpProtocolLearnerTests.cpp

@@ -14,7 +14,7 @@
 #include "PacketAnalyser.hpp"
 #include "CUdpPair.hpp"
 #include "CUdpProtocolLearner.hpp"
-#include "CUdpSender.hpp"
+#include "CUdpClient.hpp"
 #include "CUdpReceiver.hpp"
 
 #include <boost/thread.hpp>

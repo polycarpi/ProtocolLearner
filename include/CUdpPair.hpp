@@ -30,13 +30,33 @@ public:
 		m_InboundSocket = new boost::asio::ip::udp::socket(m_IoService);
 		m_LocalEndpoint = new boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(m_IpAddressToListenOn), m_PortToReceiveOn);
         m_InboundSocket->open(m_LocalEndpoint->protocol());
-        //m_InboundSocket->set_option(boost::asio::ip::udp::socket::reuse_address(true));
         m_InboundSocket->bind(*m_LocalEndpoint);
         
-		m_OutboundSocket = new boost::asio::ip::udp::socket(m_IoService);
-		m_FinalEndpoint = new boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(m_IpAddressToSendTo), m_PortToSendTo);
-        m_OutboundSocket->open(m_LocalEndpoint->protocol());        		
+        if(m_PortToSendTo != 0)
+        {
+			m_OutboundSocket = new boost::asio::ip::udp::socket(m_IoService);
+			m_FinalEndpoint = new boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(m_IpAddressToSendTo), m_PortToSendTo);
+	        m_OutboundSocket->open(m_LocalEndpoint->protocol());
+	    }
+	    else
+	    {
+			std::cerr << "(" << this << "): " << "Got an empty port. Deferring initialisation" << std::endl;
+		}
 	}
+	
+	void mSetOutboundPortAndOpenSocket(const std::uint16_t aNewPort)
+	{
+		std::cerr << "(" << this << "): " << "Setting destination port to " << aNewPort << std::endl;
+		m_OutboundSocket = new boost::asio::ip::udp::socket(m_IoService);
+		
+		m_PortToSendTo = aNewPort;
+		m_FinalEndpoint = new boost::asio::ip::udp::endpoint(
+		   boost::asio::ip::address::from_string(m_IpAddressToSendTo), 
+		   m_PortToSendTo);
+        
+        m_OutboundSocket->open(m_LocalEndpoint->protocol());
+	}
+	
 	void mSetPacketReceivedCallback(std::function<void(const std::vector<uint8_t>)>);
 	void mStop();
 	void mStartReceive();
@@ -50,12 +70,17 @@ public:
 		delete m_FinalEndpoint;
 	}
     void handle_receive_from(const boost::system::error_code&, size_t);
-		
+	
+	const std::uint16_t mGetPortOfClient()
+	{
+		return m_RemoteEndpoint.port();
+	}
+	
 private:
     const std::string m_IpAddressToListenOn;
     const std::string m_IpAddressToSendTo;
     const std::uint16_t m_PortToReceiveOn;
-    const std::uint16_t m_PortToSendTo;
+    std::uint16_t m_PortToSendTo;
     std::function<void(const std::vector<uint8_t>)> m_PacketReceivedCallback;
     boost::asio::io_service& m_IoService;
     boost::asio::ip::udp::socket * m_InboundSocket;
