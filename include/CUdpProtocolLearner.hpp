@@ -28,9 +28,7 @@ public:
 		
 		if(!m_DownwardTrafficSeen)
 		{
-			std::cerr << "Attempting to set outbound port and socket" << std::endl;
 			m_LowToHighUdpPair.mSetOutboundPortAndOpenSocket(m_HighToLowUdpPair.mGetPortOfClient());
-			std::cerr << "Set the destination port for the upward sender to " << m_HighToLowUdpPair.mGetPortOfClient() << std::endl;
 			m_DownwardTrafficSeen = true;
 		}
 		

@@ -32,10 +32,8 @@ void CUdpPair::handle_receive_from(const boost::system::error_code& error,
 {
 	++m_PacketsSeen;
 	m_TotalBytesSeen += bytes_recvd;
-	std::cerr << "Got " << bytes_recvd << std::endl;
 	m_PacketReceivedCallback(std::vector<uint8_t>(m_ReceiveBuffer.begin(), m_ReceiveBuffer.begin() + bytes_recvd));
 	const auto lTempVec = std::vector<uint8_t>(m_ReceiveBuffer.begin(), m_ReceiveBuffer.begin() + bytes_recvd);
-	std::cerr << "Sending " << bytes_recvd << " to " << *m_FinalEndpoint << std::endl;
 	m_OutboundSocket->send_to(boost::asio::buffer(lTempVec), *m_FinalEndpoint);
 
 	mStartReceive();

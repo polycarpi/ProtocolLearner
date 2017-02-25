@@ -74,7 +74,7 @@ private:
 	boost::asio::ip::udp::socket * m_InboundSocket;
     boost::asio::io_service& m_IoService;	
 	boost::asio::ip::udp::socket m_OutboundSocket;
-	boost::array<char, 10> m_ReceiveBuffer;
+	boost::array<char, 65535> m_ReceiveBuffer;
     boost::asio::ip::udp::endpoint m_RemoteEndpointReceivingFrom;
     boost::asio::ip::udp::endpoint m_RemoteEndpointToReplyTo;
     

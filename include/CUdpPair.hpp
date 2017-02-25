@@ -38,15 +38,10 @@ public:
 			m_FinalEndpoint = new boost::asio::ip::udp::endpoint(boost::asio::ip::address::from_string(m_IpAddressToSendTo), m_PortToSendTo);
 	        m_OutboundSocket->open(m_LocalEndpoint->protocol());
 	    }
-	    else
-	    {
-			std::cerr << "(" << this << "): " << "Got an empty port. Deferring initialisation" << std::endl;
-		}
 	}
 	
 	void mSetOutboundPortAndOpenSocket(const std::uint16_t aNewPort)
 	{
-		std::cerr << "(" << this << "): " << "Setting destination port to " << aNewPort << std::endl;
 		m_OutboundSocket = new boost::asio::ip::udp::socket(m_IoService);
 		
 		m_PortToSendTo = aNewPort;
@@ -85,7 +80,7 @@ private:
     boost::asio::io_service& m_IoService;
     boost::asio::ip::udp::socket * m_InboundSocket;
     boost::asio::ip::udp::socket * m_OutboundSocket;    
-    std::array<std::uint8_t, 10000> m_ReceiveBuffer;
+    std::array<std::uint8_t, 65535> m_ReceiveBuffer;
     boost::asio::ip::udp::endpoint * m_LocalEndpoint;
     boost::asio::ip::udp::endpoint * m_FinalEndpoint;
     boost::asio::ip::udp::endpoint m_RemoteEndpoint;

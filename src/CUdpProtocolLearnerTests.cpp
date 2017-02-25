@@ -15,7 +15,8 @@
 static const std::uint32_t milliseccondSleepTimeForTermination = 10;
 
 
-TEST_CASE("Test basic UDP protocol learner functionality, namely that we can set up a protocol learner and inject packets")
+TEST_CASE("Test basic UDP protocol learner functionality, " 
+          "namely that we can set up a protocol learner and inject packets")
 {
 	
 	const std::uint16_t lHighReceiverPort{10146};
@@ -354,4 +355,51 @@ TEST_CASE("Test an entire round trip", "[roundtrip]")
 
     REQUIRE(RoundTripCallbackFired);
 	
+}
+
+TEST_CASE("Test that the UDP receiver clears buffer memory appropriately "
+           "after receiving a longer frame")
+{
+	boost::asio::io_service lMainService;
+	
+	bool areSame = false;
+	std::vector<std::uint8_t> aExpected;
+	
+	auto bytesExtractor = [&](const std::vector<std::uint8_t>& aIn)
+	{
+		areSame = std::equal(aIn.begin(), aIn.end(), aExpected.begin());
+	};
+		
+	CUdpClient UdpSender(std::string("127.0.0.1"), 10042, lMainService);
+	CUdpReceiver UdpReceiver(std::string("127.0.0.1"), 10042, lMainService);
+	UdpReceiver.mSetFrameReceivedCallback(bytesExtractor);
+	
+	std::vector<std::uint8_t> lFrame({0x1A, 0x4C});
+	// Send a short frame
+	UdpSender.mSend(lFrame);	
+	
+	lFrame.clear();
+	for(int i = 0; i < 24; ++i)
+	{
+	    lFrame.push_back(i);
+    }
+    // Now send a long frame
+    UdpSender.mSend(lFrame);
+    
+    lFrame.clear();
+	for(int i = 0; i < 3; ++i)
+	{
+	    lFrame.push_back(i);
+    }    
+    
+    // Now send a short frame again
+    UdpSender.mSend(lFrame);
+    aExpected = lFrame;
+	
+	boost::thread t(boost::bind(&boost::asio::io_service::run, &lMainService));
+    std::this_thread::sleep_for (std::chrono::milliseconds(milliseccondSleepTimeForTermination));
+	lMainService.stop();
+	t.join();
+		
+	REQUIRE(areSame);
 }
