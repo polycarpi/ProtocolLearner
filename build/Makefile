@@ -327,6 +327,30 @@ src/PacketAnalyser.cpp.s:
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/PacketAnalyser.cpp.s
 .PHONY : src/PacketAnalyser.cpp.s
 
+src/PacketAnalyserTests.o: src/PacketAnalyserTests.cpp.o
+.PHONY : src/PacketAnalyserTests.o
+
+# target to build an object file
+src/PacketAnalyserTests.cpp.o:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/PacketAnalyserTests.cpp.o
+.PHONY : src/PacketAnalyserTests.cpp.o
+
+src/PacketAnalyserTests.i: src/PacketAnalyserTests.cpp.i
+.PHONY : src/PacketAnalyserTests.i
+
+# target to preprocess a source file
+src/PacketAnalyserTests.cpp.i:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/PacketAnalyserTests.cpp.i
+.PHONY : src/PacketAnalyserTests.cpp.i
+
+src/PacketAnalyserTests.s: src/PacketAnalyserTests.cpp.s
+.PHONY : src/PacketAnalyserTests.s
+
+# target to generate assembly for a file
+src/PacketAnalyserTests.cpp.s:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/PacketAnalyserTests.cpp.s
+.PHONY : src/PacketAnalyserTests.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -387,6 +411,9 @@ help:
 	@echo "... src/PacketAnalyser.o"
 	@echo "... src/PacketAnalyser.i"
 	@echo "... src/PacketAnalyser.s"
+	@echo "... src/PacketAnalyserTests.o"
+	@echo "... src/PacketAnalyserTests.i"
+	@echo "... src/PacketAnalyserTests.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

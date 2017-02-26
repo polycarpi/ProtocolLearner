@@ -17,7 +17,8 @@ set(SOURCES src/main.cpp
             src/CUdpReceiver.cpp
             src/KMeansTests.cpp
             src/CUdpProtocolLearnerTests.cpp
-            src/CUdpTestEchoServer.cpp)
+            src/CUdpTestEchoServer.cpp
+            src/PacketAnalyserTests.cpp)
 
 add_compile_options(-std=c++11)
 

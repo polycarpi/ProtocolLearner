@@ -23,7 +23,7 @@ public:
 	{
 	};
 	
-	void mSetParametersFromLocalSocket(const boost::asio::ip::udp::socket* aLocalSocket)
+	void mReadParametersFromLocalSocket(const boost::asio::ip::udp::socket* aLocalSocket)
 	{
 		m_AddressToReceiveOn = aLocalSocket->local_endpoint().address().to_string();
 		m_PortToReceiveOn = aLocalSocket->local_endpoint().port();
