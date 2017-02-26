@@ -28,6 +28,11 @@ public:
 
     {
 		m_InboundSocket = new boost::asio::ip::udp::socket(m_IoService, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), m_PortToReceiveOn));
+		
+		boost::asio::socket_base::receive_buffer_size option(4*1024*1024);
+		m_InboundSocket->set_option(option);
+		m_InboundSocket->get_option(option);
+		
         mStartReceive();
       
 	}
@@ -72,13 +77,13 @@ private:
 		std::vector<std::uint8_t> lTemp(m_ReceiveBuffer.begin(), m_ReceiveBuffer.begin() + bytes_recvd);
 		m_FrameReceivedCallback(lTemp);
 		mStartReceive();
-	}	
+	}
 
     boost::asio::ip::udp::socket * m_InboundSocket;
     std::uint32_t m_PacketsSeen;
     std::uint32_t m_TotalBytesSeen;
     boost::asio::io_service& m_IoService;
-    boost::array<char, 10> m_ReceiveBuffer;  
+    boost::array<char, 1024*1024> m_ReceiveBuffer;  
     boost::asio::ip::udp::endpoint m_RemoteEndpoint;
     std::function<void(std::vector<std::uint8_t>&)> m_FrameReceivedCallback;
     

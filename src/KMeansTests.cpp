@@ -126,7 +126,7 @@ the (1.0, 0.0) cluster")
 	
 	// Extract the packet with ID
 	const auto extractedPacket = packetLearner.mExtract(2);
-	REQUIRE(abs(extractedPacket.m_EuclideanDistanceFromAssignedMean == sqrt(0.125f)) < 0.001);
+	REQUIRE(abs(extractedPacket.m_EuclideanDistanceFromAssignedMean - sqrt(0.125f)) < 0.001);
     const auto lExtractedMean = packetLearner.mExtractMean(extractedPacket.m_MeanIndex);
     REQUIRE(1.0f == lExtractedMean.m_Vector.at(0));
     REQUIRE(0.0f == lExtractedMean.m_Vector.at(1));

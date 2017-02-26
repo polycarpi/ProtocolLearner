@@ -100,26 +100,43 @@ TEST_CASE("Test that the protocol learner terminates after observing the max num
 }
 
 
-TEST_CASE("Test that the UDP receiver works")
+TEST_CASE("Test that the UDP receiver works", "[udpblast]")
 {
-	boost::asio::io_service lMainService;	
+	boost::asio::io_service lSenderService;	
+	boost::asio::io_service lReceiverService;	
 		
-	CUdpClient UdpSender(std::string("127.0.0.1"), 10042, lMainService);
-	CUdpReceiver UdpReceiver(std::string("127.0.0.1"), 10042, lMainService);
+	CUdpClient UdpSender(std::string("127.0.0.1"), 10042, lSenderService);
+	CUdpReceiver UdpReceiver(std::string("127.0.0.1"), 10042, lReceiverService);
 	
 	REQUIRE(UdpReceiver.mGetPacketsSeen() == 0);
-	REQUIRE(UdpReceiver.mGetTotalBytesSeen() == 0);		
+	REQUIRE(UdpReceiver.mGetTotalBytesSeen() == 0);
 	
-	const std::vector<std::uint8_t> lFrame({0x1A, 0x4C});
+	const std::vector<std::uint8_t> lFrame({0x1A, 0x4C, 0x1A, 0x4C, 0x1A, 0x4C, 0x1A, 0x4C, 0x1A, 0x4C, 0x1A, 0x4C});
+	
+	const std::uint32_t lNumFramesToSend = 4810;
 	
 	UdpSender.mSend(lFrame);	
-	boost::thread t(boost::bind(&boost::asio::io_service::run, &lMainService));
+	boost::thread tSender(boost::bind(&boost::asio::io_service::run, &lSenderService));
+	boost::thread tReceiver(boost::bind(&boost::asio::io_service::run, &lReceiverService));
+	
+	for(std::uint32_t l = 0; l < lNumFramesToSend - 1; ++l)
+	{
+		if(0 == l % 50)
+		{
+	        std::this_thread::sleep_for (std::chrono::microseconds(10));
+		}
+	    UdpSender.mSend(lFrame);
+    }
+    
     std::this_thread::sleep_for (std::chrono::milliseconds(milliseccondSleepTimeForTermination));
-	lMainService.stop();
-	t.join();
+	lSenderService.stop();
+	lReceiverService.stop();
+	
+	tSender.join();
+	tReceiver.join();
 		
-	REQUIRE(UdpReceiver.mGetPacketsSeen() == 1);
-	REQUIRE(UdpReceiver.mGetTotalBytesSeen() == lFrame.size());
+	REQUIRE(UdpReceiver.mGetPacketsSeen() == lNumFramesToSend);
+	REQUIRE(UdpReceiver.mGetTotalBytesSeen() == lFrame.size() * lNumFramesToSend);
 }
 
 
@@ -336,24 +353,29 @@ TEST_CASE("Test an entire round trip", "[roundtrip]")
 	                                       
 	UdpProtocolLearner.mStartListening();
 
-    bool RoundTripCallbackFired = false;
-    auto RoundTripCallback = [&](){RoundTripCallbackFired = true;};
+    std::uint32_t packetsReceived = 0;
+    auto RoundTripCallback = [&](){++packetsReceived;};
 
 	CUdpClient UdpClient(std::string("127.0.0.1"), lDiodePortHighToLow, lMainService);
 	UdpClient.mSetFrameReceivedCallback(RoundTripCallback);
 
 	const std::vector<std::uint8_t> lFrame({0x1A, 0x4C});
 
-    REQUIRE(!RoundTripCallbackFired);
+    REQUIRE(packetsReceived == 0);
 
-	UdpClient.mSend(lFrame);
+    const std::uint32_t numPacketsToSend = 148;
+
+    for(std::uint32_t lF = 0; lF < numPacketsToSend; ++lF)
+    {
+		UdpClient.mSend(lFrame);
+    }
 	
 	boost::thread t(boost::bind(&boost::asio::io_service::run, &lMainService));
     std::this_thread::sleep_for (std::chrono::milliseconds(milliseccondSleepTimeForTermination));
     lMainService.stop();    
     t.join();
 
-    REQUIRE(RoundTripCallbackFired);
+    REQUIRE(packetsReceived == numPacketsToSend);
 	
 }
 
@@ -384,6 +406,7 @@ TEST_CASE("Test that the UDP receiver clears buffer memory appropriately "
 	    lFrame.push_back(i);
     }
     // Now send a long frame
+    
     UdpSender.mSend(lFrame);
     
     lFrame.clear();
