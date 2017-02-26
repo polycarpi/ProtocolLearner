@@ -8,8 +8,8 @@ include_directories(include ${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIR})
 
 include_directories(include)
-set(SOURCES src/main.cpp
-            src/KMeans.cpp 
+
+set(TEST_SOURCES src/KMeans.cpp 
             src/PacketAnalyser.cpp
             src/CUdpPair.cpp
             src/CUdpProtocolLearner.cpp
@@ -19,8 +19,22 @@ set(SOURCES src/main.cpp
             src/CUdpProtocolLearnerTests.cpp
             src/CUdpTestEchoServer.cpp
             src/PacketAnalyserTests.cpp)
+            
+set(BINARY_SOURCES src/main.cpp
+            src/KMeans.cpp 
+            src/PacketAnalyser.cpp
+            src/CUdpPair.cpp
+            src/CUdpProtocolLearner.cpp
+            src/CUdpClient.cpp
+            src/CUdpReceiver.cpp
+            src/KMeansTests.cpp
+            src/CUdpProtocolLearnerTests.cpp
+            src/CUdpTestEchoServer.cpp
+            src/PacketAnalyserTests.cpp)            
 
 add_compile_options(-std=c++11)
 
-add_executable(tests ${SOURCES})
+add_executable(tests ${TEST_SOURCES})
+add_executable(binary ${BINARY_SOURCES})
+
 TARGET_LINK_LIBRARIES(tests pcap pthread boost_system boost_thread)

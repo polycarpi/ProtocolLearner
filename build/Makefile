@@ -99,6 +99,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named binary
+
+# Build rule for target.
+binary: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 binary
+.PHONY : binary
+
+# fast build rule for target.
+binary/fast:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/build
+.PHONY : binary/fast
+
+#=============================================================================
 # Target rules for targets named tests
 
 # Build rule for target.
@@ -116,6 +129,7 @@ src/CUdpClient.o: src/CUdpClient.cpp.o
 
 # target to build an object file
 src/CUdpClient.cpp.o:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpClient.cpp.o
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpClient.cpp.o
 .PHONY : src/CUdpClient.cpp.o
 
@@ -124,6 +138,7 @@ src/CUdpClient.i: src/CUdpClient.cpp.i
 
 # target to preprocess a source file
 src/CUdpClient.cpp.i:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpClient.cpp.i
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpClient.cpp.i
 .PHONY : src/CUdpClient.cpp.i
 
@@ -132,6 +147,7 @@ src/CUdpClient.s: src/CUdpClient.cpp.s
 
 # target to generate assembly for a file
 src/CUdpClient.cpp.s:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpClient.cpp.s
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpClient.cpp.s
 .PHONY : src/CUdpClient.cpp.s
 
@@ -140,6 +156,7 @@ src/CUdpPair.o: src/CUdpPair.cpp.o
 
 # target to build an object file
 src/CUdpPair.cpp.o:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpPair.cpp.o
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpPair.cpp.o
 .PHONY : src/CUdpPair.cpp.o
 
@@ -148,6 +165,7 @@ src/CUdpPair.i: src/CUdpPair.cpp.i
 
 # target to preprocess a source file
 src/CUdpPair.cpp.i:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpPair.cpp.i
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpPair.cpp.i
 .PHONY : src/CUdpPair.cpp.i
 
@@ -156,6 +174,7 @@ src/CUdpPair.s: src/CUdpPair.cpp.s
 
 # target to generate assembly for a file
 src/CUdpPair.cpp.s:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpPair.cpp.s
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpPair.cpp.s
 .PHONY : src/CUdpPair.cpp.s
 
@@ -164,6 +183,7 @@ src/CUdpProtocolLearner.o: src/CUdpProtocolLearner.cpp.o
 
 # target to build an object file
 src/CUdpProtocolLearner.cpp.o:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpProtocolLearner.cpp.o
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpProtocolLearner.cpp.o
 .PHONY : src/CUdpProtocolLearner.cpp.o
 
@@ -172,6 +192,7 @@ src/CUdpProtocolLearner.i: src/CUdpProtocolLearner.cpp.i
 
 # target to preprocess a source file
 src/CUdpProtocolLearner.cpp.i:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpProtocolLearner.cpp.i
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpProtocolLearner.cpp.i
 .PHONY : src/CUdpProtocolLearner.cpp.i
 
@@ -180,6 +201,7 @@ src/CUdpProtocolLearner.s: src/CUdpProtocolLearner.cpp.s
 
 # target to generate assembly for a file
 src/CUdpProtocolLearner.cpp.s:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpProtocolLearner.cpp.s
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpProtocolLearner.cpp.s
 .PHONY : src/CUdpProtocolLearner.cpp.s
 
@@ -188,6 +210,7 @@ src/CUdpProtocolLearnerTests.o: src/CUdpProtocolLearnerTests.cpp.o
 
 # target to build an object file
 src/CUdpProtocolLearnerTests.cpp.o:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpProtocolLearnerTests.cpp.o
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpProtocolLearnerTests.cpp.o
 .PHONY : src/CUdpProtocolLearnerTests.cpp.o
 
@@ -196,6 +219,7 @@ src/CUdpProtocolLearnerTests.i: src/CUdpProtocolLearnerTests.cpp.i
 
 # target to preprocess a source file
 src/CUdpProtocolLearnerTests.cpp.i:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpProtocolLearnerTests.cpp.i
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpProtocolLearnerTests.cpp.i
 .PHONY : src/CUdpProtocolLearnerTests.cpp.i
 
@@ -204,6 +228,7 @@ src/CUdpProtocolLearnerTests.s: src/CUdpProtocolLearnerTests.cpp.s
 
 # target to generate assembly for a file
 src/CUdpProtocolLearnerTests.cpp.s:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpProtocolLearnerTests.cpp.s
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpProtocolLearnerTests.cpp.s
 .PHONY : src/CUdpProtocolLearnerTests.cpp.s
 
@@ -212,6 +237,7 @@ src/CUdpReceiver.o: src/CUdpReceiver.cpp.o
 
 # target to build an object file
 src/CUdpReceiver.cpp.o:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpReceiver.cpp.o
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpReceiver.cpp.o
 .PHONY : src/CUdpReceiver.cpp.o
 
@@ -220,6 +246,7 @@ src/CUdpReceiver.i: src/CUdpReceiver.cpp.i
 
 # target to preprocess a source file
 src/CUdpReceiver.cpp.i:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpReceiver.cpp.i
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpReceiver.cpp.i
 .PHONY : src/CUdpReceiver.cpp.i
 
@@ -228,6 +255,7 @@ src/CUdpReceiver.s: src/CUdpReceiver.cpp.s
 
 # target to generate assembly for a file
 src/CUdpReceiver.cpp.s:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpReceiver.cpp.s
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpReceiver.cpp.s
 .PHONY : src/CUdpReceiver.cpp.s
 
@@ -236,6 +264,7 @@ src/CUdpTestEchoServer.o: src/CUdpTestEchoServer.cpp.o
 
 # target to build an object file
 src/CUdpTestEchoServer.cpp.o:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpTestEchoServer.cpp.o
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpTestEchoServer.cpp.o
 .PHONY : src/CUdpTestEchoServer.cpp.o
 
@@ -244,6 +273,7 @@ src/CUdpTestEchoServer.i: src/CUdpTestEchoServer.cpp.i
 
 # target to preprocess a source file
 src/CUdpTestEchoServer.cpp.i:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpTestEchoServer.cpp.i
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpTestEchoServer.cpp.i
 .PHONY : src/CUdpTestEchoServer.cpp.i
 
@@ -252,6 +282,7 @@ src/CUdpTestEchoServer.s: src/CUdpTestEchoServer.cpp.s
 
 # target to generate assembly for a file
 src/CUdpTestEchoServer.cpp.s:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpTestEchoServer.cpp.s
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpTestEchoServer.cpp.s
 .PHONY : src/CUdpTestEchoServer.cpp.s
 
@@ -260,6 +291,7 @@ src/KMeans.o: src/KMeans.cpp.o
 
 # target to build an object file
 src/KMeans.cpp.o:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/KMeans.cpp.o
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/KMeans.cpp.o
 .PHONY : src/KMeans.cpp.o
 
@@ -268,6 +300,7 @@ src/KMeans.i: src/KMeans.cpp.i
 
 # target to preprocess a source file
 src/KMeans.cpp.i:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/KMeans.cpp.i
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/KMeans.cpp.i
 .PHONY : src/KMeans.cpp.i
 
@@ -276,6 +309,7 @@ src/KMeans.s: src/KMeans.cpp.s
 
 # target to generate assembly for a file
 src/KMeans.cpp.s:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/KMeans.cpp.s
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/KMeans.cpp.s
 .PHONY : src/KMeans.cpp.s
 
@@ -284,6 +318,7 @@ src/KMeansTests.o: src/KMeansTests.cpp.o
 
 # target to build an object file
 src/KMeansTests.cpp.o:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/KMeansTests.cpp.o
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/KMeansTests.cpp.o
 .PHONY : src/KMeansTests.cpp.o
 
@@ -292,6 +327,7 @@ src/KMeansTests.i: src/KMeansTests.cpp.i
 
 # target to preprocess a source file
 src/KMeansTests.cpp.i:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/KMeansTests.cpp.i
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/KMeansTests.cpp.i
 .PHONY : src/KMeansTests.cpp.i
 
@@ -300,6 +336,7 @@ src/KMeansTests.s: src/KMeansTests.cpp.s
 
 # target to generate assembly for a file
 src/KMeansTests.cpp.s:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/KMeansTests.cpp.s
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/KMeansTests.cpp.s
 .PHONY : src/KMeansTests.cpp.s
 
@@ -308,6 +345,7 @@ src/PacketAnalyser.o: src/PacketAnalyser.cpp.o
 
 # target to build an object file
 src/PacketAnalyser.cpp.o:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/PacketAnalyser.cpp.o
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/PacketAnalyser.cpp.o
 .PHONY : src/PacketAnalyser.cpp.o
 
@@ -316,6 +354,7 @@ src/PacketAnalyser.i: src/PacketAnalyser.cpp.i
 
 # target to preprocess a source file
 src/PacketAnalyser.cpp.i:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/PacketAnalyser.cpp.i
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/PacketAnalyser.cpp.i
 .PHONY : src/PacketAnalyser.cpp.i
 
@@ -324,6 +363,7 @@ src/PacketAnalyser.s: src/PacketAnalyser.cpp.s
 
 # target to generate assembly for a file
 src/PacketAnalyser.cpp.s:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/PacketAnalyser.cpp.s
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/PacketAnalyser.cpp.s
 .PHONY : src/PacketAnalyser.cpp.s
 
@@ -332,6 +372,7 @@ src/PacketAnalyserTests.o: src/PacketAnalyserTests.cpp.o
 
 # target to build an object file
 src/PacketAnalyserTests.cpp.o:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/PacketAnalyserTests.cpp.o
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/PacketAnalyserTests.cpp.o
 .PHONY : src/PacketAnalyserTests.cpp.o
 
@@ -340,6 +381,7 @@ src/PacketAnalyserTests.i: src/PacketAnalyserTests.cpp.i
 
 # target to preprocess a source file
 src/PacketAnalyserTests.cpp.i:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/PacketAnalyserTests.cpp.i
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/PacketAnalyserTests.cpp.i
 .PHONY : src/PacketAnalyserTests.cpp.i
 
@@ -348,6 +390,7 @@ src/PacketAnalyserTests.s: src/PacketAnalyserTests.cpp.s
 
 # target to generate assembly for a file
 src/PacketAnalyserTests.cpp.s:
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/PacketAnalyserTests.cpp.s
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/PacketAnalyserTests.cpp.s
 .PHONY : src/PacketAnalyserTests.cpp.s
 
@@ -356,7 +399,7 @@ src/main.o: src/main.cpp.o
 
 # target to build an object file
 src/main.cpp.o:
-	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/main.cpp.o
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/main.cpp.o
 .PHONY : src/main.cpp.o
 
 src/main.i: src/main.cpp.i
@@ -364,7 +407,7 @@ src/main.i: src/main.cpp.i
 
 # target to preprocess a source file
 src/main.cpp.i:
-	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/main.cpp.i
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/main.cpp.i
 .PHONY : src/main.cpp.i
 
 src/main.s: src/main.cpp.s
@@ -372,7 +415,7 @@ src/main.s: src/main.cpp.s
 
 # target to generate assembly for a file
 src/main.cpp.s:
-	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/main.cpp.s
+	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
 # Help Target
@@ -381,6 +424,7 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
+	@echo "... binary"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... tests"
