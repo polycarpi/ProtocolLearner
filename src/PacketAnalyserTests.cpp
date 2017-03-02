@@ -35,15 +35,15 @@ TEST_CASE("Basic test for the run-length analyser - calling from PacketAnalyser"
 	const std::vector<std::uint8_t> lPacketContents({'R', 'F', 'B',
 		 ' ', '0', '0', '3', '.', '0', '0', '8', '\n'});
 	
-	std::list<PacketAnalysisAlgo*> lAlgoList;
-	lAlgoList.push_back(new RunLengthAlgo());
+	//std::list<PacketAnalysisAlgo*> lAlgoList;
+	//lAlgoList.push_back(new RunLengthAlgo());
 	
-	PacketAnalyser lAnalyser(lPacketContents, lAlgoList);
+	PacketAnalyser lAnalyser(lPacketContents);//, lAlgoList);
 	lAnalyser.mAnalysePacket();
 	
 	auto lResults = lAnalyser.mGetAnalysis();
 	
 	
-	REQUIRE(2 == 3);
+	//REQUIRE(2 == 3);
 }
 

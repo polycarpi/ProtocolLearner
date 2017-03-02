@@ -1,3 +1,6 @@
+#define CATCH_CONFIG_MAIN
+#define CATCH_CONFIG_FAST_COMPILE
+
 #include <boost/thread.hpp>
 #include <chrono>
 #include <thread>
