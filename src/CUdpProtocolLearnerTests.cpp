@@ -15,7 +15,7 @@
 #include "CUdpReceiver.hpp"
 #include "CUdpTestEchoServer.hpp"
 
-static const std::uint32_t milliseccondSleepTimeForTermination = 10;
+static const std::uint32_t milliseccondSleepTimeForTermination = 50;
 
 
 TEST_CASE("Test basic UDP protocol learner functionality, " 

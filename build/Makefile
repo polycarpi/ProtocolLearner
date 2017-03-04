@@ -210,7 +210,6 @@ src/CUdpProtocolLearnerTests.o: src/CUdpProtocolLearnerTests.cpp.o
 
 # target to build an object file
 src/CUdpProtocolLearnerTests.cpp.o:
-	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpProtocolLearnerTests.cpp.o
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpProtocolLearnerTests.cpp.o
 .PHONY : src/CUdpProtocolLearnerTests.cpp.o
 
@@ -219,7 +218,6 @@ src/CUdpProtocolLearnerTests.i: src/CUdpProtocolLearnerTests.cpp.i
 
 # target to preprocess a source file
 src/CUdpProtocolLearnerTests.cpp.i:
-	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpProtocolLearnerTests.cpp.i
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpProtocolLearnerTests.cpp.i
 .PHONY : src/CUdpProtocolLearnerTests.cpp.i
 
@@ -228,7 +226,6 @@ src/CUdpProtocolLearnerTests.s: src/CUdpProtocolLearnerTests.cpp.s
 
 # target to generate assembly for a file
 src/CUdpProtocolLearnerTests.cpp.s:
-	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpProtocolLearnerTests.cpp.s
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpProtocolLearnerTests.cpp.s
 .PHONY : src/CUdpProtocolLearnerTests.cpp.s
 
@@ -264,7 +261,6 @@ src/CUdpTestEchoServer.o: src/CUdpTestEchoServer.cpp.o
 
 # target to build an object file
 src/CUdpTestEchoServer.cpp.o:
-	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpTestEchoServer.cpp.o
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpTestEchoServer.cpp.o
 .PHONY : src/CUdpTestEchoServer.cpp.o
 
@@ -273,7 +269,6 @@ src/CUdpTestEchoServer.i: src/CUdpTestEchoServer.cpp.i
 
 # target to preprocess a source file
 src/CUdpTestEchoServer.cpp.i:
-	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpTestEchoServer.cpp.i
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpTestEchoServer.cpp.i
 .PHONY : src/CUdpTestEchoServer.cpp.i
 
@@ -282,7 +277,6 @@ src/CUdpTestEchoServer.s: src/CUdpTestEchoServer.cpp.s
 
 # target to generate assembly for a file
 src/CUdpTestEchoServer.cpp.s:
-	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/CUdpTestEchoServer.cpp.s
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpTestEchoServer.cpp.s
 .PHONY : src/CUdpTestEchoServer.cpp.s
 
@@ -318,7 +312,6 @@ src/KMeansTests.o: src/KMeansTests.cpp.o
 
 # target to build an object file
 src/KMeansTests.cpp.o:
-	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/KMeansTests.cpp.o
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/KMeansTests.cpp.o
 .PHONY : src/KMeansTests.cpp.o
 
@@ -327,7 +320,6 @@ src/KMeansTests.i: src/KMeansTests.cpp.i
 
 # target to preprocess a source file
 src/KMeansTests.cpp.i:
-	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/KMeansTests.cpp.i
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/KMeansTests.cpp.i
 .PHONY : src/KMeansTests.cpp.i
 
@@ -336,7 +328,6 @@ src/KMeansTests.s: src/KMeansTests.cpp.s
 
 # target to generate assembly for a file
 src/KMeansTests.cpp.s:
-	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/KMeansTests.cpp.s
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/KMeansTests.cpp.s
 .PHONY : src/KMeansTests.cpp.s
 
@@ -372,7 +363,6 @@ src/PacketAnalyserTests.o: src/PacketAnalyserTests.cpp.o
 
 # target to build an object file
 src/PacketAnalyserTests.cpp.o:
-	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/PacketAnalyserTests.cpp.o
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/PacketAnalyserTests.cpp.o
 .PHONY : src/PacketAnalyserTests.cpp.o
 
@@ -381,7 +371,6 @@ src/PacketAnalyserTests.i: src/PacketAnalyserTests.cpp.i
 
 # target to preprocess a source file
 src/PacketAnalyserTests.cpp.i:
-	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/PacketAnalyserTests.cpp.i
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/PacketAnalyserTests.cpp.i
 .PHONY : src/PacketAnalyserTests.cpp.i
 
@@ -390,7 +379,6 @@ src/PacketAnalyserTests.s: src/PacketAnalyserTests.cpp.s
 
 # target to generate assembly for a file
 src/PacketAnalyserTests.cpp.s:
-	$(MAKE) -f CMakeFiles/binary.dir/build.make CMakeFiles/binary.dir/src/PacketAnalyserTests.cpp.s
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/PacketAnalyserTests.cpp.s
 .PHONY : src/PacketAnalyserTests.cpp.s
 

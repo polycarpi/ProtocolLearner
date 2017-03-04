@@ -9,6 +9,7 @@
 #include "boost/asio.hpp"
 #include "KMeans.hpp"
 #include "PacketAnalyser.hpp"
+#include "Algos/CharDistributionAlgo.hpp"
 
 class CUdpProtocolLearner
 {
@@ -19,11 +20,15 @@ public:
 		if(m_HighToLowUdpPair.mGetPacketsSeen() 
 		  + m_LowToHighUdpPair.mGetPacketsSeen() <= m_MaxPacketsToObserve)
 		{
-			PacketAnalyser lPacketAnalyser(aBytesIn);
+			PacketAnalyser lPacketAnalyser(aBytesIn, std::make_shared<CharDistributionAlgo>());
 			lPacketAnalyser.mAnalysePacket();
 			
 			const auto lAnalysis = lPacketAnalyser.mGetAnalysis();
-			m_MessageClassificationEngine.mSubmit(lAnalysis);			
+			
+			if(!lAnalysis.empty())
+			{	
+				m_MessageClassificationEngine.mSubmit(lAnalysis);		
+		    }
 		}
 		
 		if(!m_DownwardTrafficSeen)

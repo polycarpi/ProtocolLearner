@@ -1,17 +1,21 @@
 #include "catch.hpp"
 #include "PacketAnalyser.hpp"
 #include "CUdpProtocolLearner.hpp"
+#include "Algos/CharDistributionAlgo.hpp"
 
 
 TEST_CASE("Dummy")
 {
-    PacketAnalyser analyser({'a'});
+    PacketAnalyser analyser({'a'}, std::make_shared<CharDistributionAlgo>());
     analyser.mAnalysePacket();
+    
     auto resultsVec = analyser.mGetAnalysis();
-    REQUIRE(1.0f == resultsVec.at(0));
-    REQUIRE(0.0f == resultsVec.at(1));
-    REQUIRE(0.0f == resultsVec.at(2));
-    REQUIRE(1.0f == resultsVec.at(3));
+    
+    REQUIRE(1.0f == resultsVec.at(CHAR));
+    REQUIRE(0.0f == resultsVec.at(WHITESPACE));
+    REQUIRE(0.0f == resultsVec.at(NUMERAL));
+    REQUIRE(0.0f == resultsVec.at(PUNCTUATION));
+    REQUIRE(0.0f == resultsVec.at(CONTROL));
 }
 
 TEST_CASE("Generate 2 packets and initialise. Check that the initial means are unchanged")

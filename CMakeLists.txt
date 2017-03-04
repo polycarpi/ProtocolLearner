@@ -28,10 +28,6 @@ set(BINARY_SOURCES src/main.cpp
             src/CUdpProtocolLearner.cpp
             src/CUdpClient.cpp
             src/CUdpReceiver.cpp
-            src/KMeansTests.cpp
-            src/CUdpProtocolLearnerTests.cpp
-            src/CUdpTestEchoServer.cpp
-            src/PacketAnalyserTests.cpp)            
             src/CUdpReceiver.cpp)            
 
 add_compile_options(-std=c++11)
