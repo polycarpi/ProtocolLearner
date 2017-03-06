@@ -33,10 +33,13 @@ TEST_CASE("Test basic UDP protocol learner functionality, "
     const std::uint32_t lMaxPacketsToObserve{10};
     const std::uint32_t lMaxTimeToObserve_s{3600};
 
+    std::shared_ptr<PacketAnalysisAlgo> lAlgo = std::make_shared<CharDistributionAlgo>();
+
 	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, 
 	                                       UdpPair_LowToHigh, 
 	                                       lMaxPacketsToObserve, 
-	                                       lMaxTimeToObserve_s);
+	                                       lMaxTimeToObserve_s,
+	                                       lAlgo);
 	
 	REQUIRE(UdpProtocolLearner.mGetPacketsSeenHighToLow() == 0);
 	REQUIRE(UdpProtocolLearner.mGetTotalBytesSeenHighToLow() == 0);
@@ -73,10 +76,13 @@ TEST_CASE("Test that the protocol learner terminates after observing the max num
     const std::uint32_t lMaxPacketsToObserve{1};
     const std::uint32_t lMaxTimeToObserve_s{3600};
 
+    std::shared_ptr<PacketAnalysisAlgo> lAlgo = std::make_shared<CharDistributionAlgo>();
+
 	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, 
 	                                       UdpPair_LowToHigh, 
 	                                       lMaxPacketsToObserve, 
-	                                       lMaxTimeToObserve_s);
+	                                       lMaxTimeToObserve_s,
+	                                       lAlgo);
 	
 	REQUIRE(UdpProtocolLearner.mGetPacketsSeenHighToLow() == 0);
 	REQUIRE(UdpProtocolLearner.mGetTotalBytesSeenHighToLow() == 0);
@@ -157,10 +163,13 @@ TEST_CASE("Test that the protocol learner passes the packets through to a receiv
     const std::uint32_t lMaxPacketsToObserve{10};
     const std::uint32_t lMaxTimeToObserve_s{3600};
 
+    std::shared_ptr<PacketAnalysisAlgo> lAlgo = std::make_shared<CharDistributionAlgo>();
+
 	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, 
 	                                       UdpPair_LowToHigh, 
 	                                       lMaxPacketsToObserve, 
-	                                       lMaxTimeToObserve_s);
+	                                       lMaxTimeToObserve_s,
+	                                       lAlgo);
 	
 	CUdpClient UdpSender(std::string("127.0.0.1"), lHighReceiverPort, lMainService);
 	const std::vector<std::uint8_t> lFrame({0x1A, 0x4C});
@@ -205,10 +214,13 @@ TEST_CASE("Test that the protocol learner adds the seen packets to a learning en
     const std::uint32_t lMaxPacketsToObserve{4};
     const std::uint32_t lMaxTimeToObserve_s{3600};
 
+    std::shared_ptr<PacketAnalysisAlgo> lAlgo = std::make_shared<CharDistributionAlgo>();
+
 	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, 
 	                                       UdpPair_LowToHigh, 
 	                                       lMaxPacketsToObserve, 
-	                                       lMaxTimeToObserve_s);
+	                                       lMaxTimeToObserve_s,
+	                                       lAlgo);
 	
 	CUdpClient UdpSender(std::string("127.0.0.1"), lHighReceiverPort, lMainService);
 	const std::vector<std::uint8_t> lFrame({0x1A, 0x4C});
@@ -261,10 +273,13 @@ TEST_CASE("Set up an echo-increment server and a UDP client. Check that the prot
     const std::uint32_t lMaxPacketsToObserve{1000};
     const std::uint32_t lMaxTimeToObserve_s{3600};
 
+    std::shared_ptr<PacketAnalysisAlgo> lAlgo = std::make_shared<CharDistributionAlgo>();
+
 	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, 
 	                                       UdpPair_LowToHigh, 
 	                                       lMaxPacketsToObserve, 
-	                                       lMaxTimeToObserve_s);
+	                                       lMaxTimeToObserve_s,
+	                                       lAlgo);
 	                                       
 	UdpProtocolLearner.mStartListening();
 
@@ -307,10 +322,13 @@ TEST_CASE("Tests that the echo-increment server replies and that the protocol le
     const std::uint32_t lMaxPacketsToObserve{1000};
     const std::uint32_t lMaxTimeToObserve_s{3600};
 
+    std::shared_ptr<PacketAnalysisAlgo> lAlgo = std::make_shared<CharDistributionAlgo>();
+
 	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, 
 	                                       UdpPair_LowToHigh, 
 	                                       lMaxPacketsToObserve, 
-	                                       lMaxTimeToObserve_s);
+	                                       lMaxTimeToObserve_s,
+	                                       lAlgo);
 	                                       
 	UdpProtocolLearner.mStartListening();
 
@@ -349,10 +367,13 @@ TEST_CASE("Test an entire round trip", "[roundtrip]")
     const std::uint32_t lMaxPacketsToObserve{1000};
     const std::uint32_t lMaxTimeToObserve_s{3600};
 
+    std::shared_ptr<PacketAnalysisAlgo> lAlgo = std::make_shared<CharDistributionAlgo>();
+
 	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, 
 	                                       UdpPair_LowToHigh, 
 	                                       lMaxPacketsToObserve, 
-	                                       lMaxTimeToObserve_s);
+	                                       lMaxTimeToObserve_s,
+	                                       lAlgo);
 	                                       
 	UdpProtocolLearner.mStartListening();
 
@@ -428,4 +449,56 @@ TEST_CASE("Test that the UDP receiver clears buffer memory appropriately "
 	t.join();
 		
 	REQUIRE(areSame);
+}
+
+
+
+
+TEST_CASE("Test that a protocol learner can assess the packets observed")
+{
+	
+	const std::uint16_t lHighReceiverPort{10146};
+	const std::uint16_t lLowReceiverPort{10020};
+	
+	boost::asio::io_service lMainService;	
+	
+	CUdpPair UdpPair_HighToLow(std::string("127.0.0.1"), std::string("127.0.0.1"), lHighReceiverPort, 12001, lMainService);
+	CUdpPair UdpPair_LowToHigh(std::string("127.0.0.1"), std::string("127.0.0.1"), lLowReceiverPort, 12002, lMainService);
+
+    std::shared_ptr<PacketAnalysisAlgo> lAlgo = std::make_shared<CharDistributionAlgo>();
+
+	CUdpProtocolLearner UdpProtocolLearner(UdpPair_HighToLow, 
+	                                       UdpPair_LowToHigh, 
+	                                       1000, 
+	                                       3600,
+	                                       lAlgo);
+	
+	REQUIRE(UdpProtocolLearner.mGetPacketsSeenHighToLow() == 0);
+	REQUIRE(UdpProtocolLearner.mGetTotalBytesSeenHighToLow() == 0);
+	
+	CUdpClient UdpSender(std::string("127.0.0.1"), lHighReceiverPort, lMainService);
+	const std::vector<std::uint8_t> lFrame({0x1A, 0x4C});
+	
+	UdpProtocolLearner.mStartListening();
+	
+	UdpSender.mSend(lFrame);
+	UdpSender.mSend(lFrame);
+	
+	boost::thread t(boost::bind(&boost::asio::io_service::run, &lMainService));
+	std::this_thread::sleep_for (std::chrono::milliseconds(milliseccondSleepTimeForTermination));
+	lMainService.stop();
+	t.join();
+
+	REQUIRE(UdpProtocolLearner.mGetNumPointsInKMeansEngine() == 2);
+	
+	// Check that the protocol learner engine has been initialised in the background
+	REQUIRE(UdpProtocolLearner.mGetCurrentMeans().size() == 2);
+
+}
+
+
+TEST_CASE("Test that the protocol learner periodically clusters the "
+"results. A separate thread with a reader lock should be used")
+{
+	REQUIRE(2 == 3);
 }

@@ -1,6 +1,14 @@
 #ifndef RUNLENGTHALGO_H
 #define RUNLENGTHALGO_H
 
+/*
+ * The run-length algorithm (currently) examines the length of runs 
+ * of character types, e.g. how many control characters in a row.
+ * 
+ * The output of mGetAnalysis is a vector of floats which gives the 
+ * run lengths. At present it does not indicate which character type.
+ */
+
 #include "Algos/PacketAnalysisAlgo.hpp"
 
 class RunLengthAlgo : public PacketAnalysisAlgo
@@ -14,7 +22,7 @@ public:
 		}
 	}
 
-	const std::vector<float> mGetAnalysis()
+	const std::vector<float> mGetAnalysis() override
 	{
 		std::vector<std::pair<eCharType, float> > lRunLengths;
 		for(auto c : m_Decoded)

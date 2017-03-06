@@ -20,7 +20,7 @@ public:
 		if(m_HighToLowUdpPair.mGetPacketsSeen() 
 		  + m_LowToHighUdpPair.mGetPacketsSeen() <= m_MaxPacketsToObserve)
 		{
-			PacketAnalyser lPacketAnalyser(aBytesIn, std::make_shared<CharDistributionAlgo>());
+			PacketAnalyser lPacketAnalyser(aBytesIn, m_AlgoPointer);
 			lPacketAnalyser.mAnalysePacket();
 			
 			const auto lAnalysis = lPacketAnalyser.mGetAnalysis();
@@ -47,17 +47,26 @@ public:
     CUdpProtocolLearner(CUdpPair& aHighToLowUdpPair,
                         CUdpPair& aLowToHighUdpPair,
                         const std::uint32_t aMaxPacketsToObserve,
-                        const std::uint32_t aMaxTimeToObserve_s)
+                        const std::uint32_t aMaxTimeToObserve_s,
+                        const std::shared_ptr<PacketAnalysisAlgo> aAnalysisAlgo)
                         :
                         m_HighToLowUdpPair(aHighToLowUdpPair), // GCC bug prevents uniform initialisation here...
                         m_LowToHighUdpPair(aLowToHighUdpPair),
                         m_MaxPacketsToObserve{aMaxPacketsToObserve},
                         m_MaxTimeToObserve_s{aMaxTimeToObserve_s},
                         m_MessageClassificationEngine(2),
-                        m_DownwardTrafficSeen(false)
+                        m_DownwardTrafficSeen(false),
+                        m_AlgoPointer(aAnalysisAlgo)
     {
 		m_HighToLowUdpPair.mSetPacketReceivedCallback(std::bind(&CUdpProtocolLearner::mProcessPacket, this, std::placeholders::_1));
 		m_LowToHighUdpPair.mSetPacketReceivedCallback(std::bind(&CUdpProtocolLearner::mProcessPacket, this, std::placeholders::_1));
+		
+		m_MessageClassificationEngine.mLaunchPeriodicClusteringAndAssignationThread(m_KMeansClusteringIntervals_ms);
+	}
+	
+	~CUdpProtocolLearner()
+	{
+		m_MessageClassificationEngine.mStopPeriodicClusteringAndAssignationThread();
 	}
 	
 	const std::uint32_t mGetPacketsSeenHighToLow()
@@ -82,6 +91,15 @@ public:
 		m_LowToHighUdpPair.mStartReceive();
 	}
 
+    const std::vector<MeanPoint<float> > mGetCurrentMeans() const
+    {
+		return m_MessageClassificationEngine.mGetCurrentMeans();
+	}
+	
+	const std::uint32_t mGetNumPointsInKMeansEngine()
+	{
+		return m_MessageClassificationEngine.mGetNumPoints();
+	}
 
 private:
     CUdpPair& m_HighToLowUdpPair;
@@ -90,5 +108,7 @@ private:
     const std::uint32_t m_MaxTimeToObserve_s;
     KMeans<float> m_MessageClassificationEngine;
     bool m_DownwardTrafficSeen;
+    std::shared_ptr<PacketAnalysisAlgo> m_AlgoPointer;
+    static const std::uint32_t m_KMeansClusteringIntervals_ms = 100;
 };
 #endif

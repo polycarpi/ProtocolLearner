@@ -36,7 +36,7 @@ TEST_CASE("Generate 2 packets and initialise. Check that the initial means are u
     
     packetLearner.mInitialise(numMeans);
 
-    const std::vector<DataPoint<float> > & extractedMeans = packetLearner.mGetCurrentMeans();
+    const std::vector<MeanPoint<float> > & extractedMeans = packetLearner.mGetCurrentMeans();
         
     if(1.0f == extractedMeans.at(0).m_Vector.at(0))
     {
@@ -81,7 +81,7 @@ run the assignment. Check that the initial means don't change")
 	packetLearner.mAssignAll();
 	
 	// Check that the initial means are unchanged
-    const std::vector<DataPoint<float> > & extractedMeans = packetLearner.mGetCurrentMeans();
+    const std::vector<MeanPoint<float> > & extractedMeans = packetLearner.mGetCurrentMeans();
     if(1.0f == extractedMeans.at(0).m_Vector.at(0))
     {
 		REQUIRE(0.0f == extractedMeans.at(0).m_Vector.at(1));
@@ -131,7 +131,7 @@ the (1.0, 0.0) cluster")
 	// Extract the packet with ID
 	const auto extractedPacket = packetLearner.mExtract(2);
 	REQUIRE(abs(extractedPacket.m_EuclideanDistanceFromAssignedMean - sqrt(0.125f)) < 0.001);
-    const auto lExtractedMean = packetLearner.mExtractMean(extractedPacket.m_MeanIndex);
+    const auto lExtractedMean = packetLearner.mExtractCurrentMeanBasedOnLabel(extractedPacket.m_MeanIndex);
     REQUIRE(1.0f == lExtractedMean.m_Vector.at(0));
     REQUIRE(0.0f == lExtractedMean.m_Vector.at(1));
 	
@@ -168,7 +168,7 @@ is unchanged but that the second mean is the mid-point of the two")
 	
 	const auto extractedLastPacket = packetLearner.mExtract(2);
 	const std::uint16_t lMeanOfInterest = extractedLastPacket.m_MeanIndex;
-    const auto lExtractedMean = packetLearner.mExtractMean(lMeanOfInterest);
+    const auto lExtractedMean = packetLearner.mExtractCurrentMeanBasedOnLabel(lMeanOfInterest);
     REQUIRE(0.875 == lExtractedMean.m_Vector.at(0));
     REQUIRE(0.125 == lExtractedMean.m_Vector.at(1));
     
@@ -198,7 +198,7 @@ the mean of the two packets")
 	packetLearner.mAssignAll();
 	packetLearner.mUpdateMeans();
 	
-    const auto lExtractedMean = packetLearner.mExtractMean(0);
+    const auto lExtractedMean = packetLearner.mExtractCurrentMeanBasedOnLabel(0);
     REQUIRE(0.5 == lExtractedMean.m_Vector.at(0));
     REQUIRE(0.5 == lExtractedMean.m_Vector.at(1));
     
@@ -210,7 +210,7 @@ the mean of the two packets")
 	packetLearner.mAssignAll();
 	packetLearner.mUpdateMeans();      
 	    
-    const auto lAnotherExtractedMean = packetLearner.mExtractMean(0);
+    const auto lAnotherExtractedMean = packetLearner.mExtractCurrentMeanBasedOnLabel(0);
     REQUIRE(0.375 == lAnotherExtractedMean.m_Vector.at(0));
     REQUIRE(0.5 == lAnotherExtractedMean.m_Vector.at(1));	    
     
@@ -252,7 +252,7 @@ TEST_CASE("Generate 1000 packets and run clustering")
     
 	const auto extractedLastPacket = packetLearner.mExtract(0);
 	const std::uint16_t lMeanOfInterest = extractedLastPacket.m_MeanIndex;
-    const auto lExtractedMean = packetLearner.mExtractMean(lMeanOfInterest);
+    const auto lExtractedMean = packetLearner.mExtractCurrentMeanBasedOnLabel(lMeanOfInterest);
     
     // Ensure that the extracted mean falls into one of the four 'corners'
     if((corners[3] >= lExtractedMean.m_Vector.at(0)) && (corners[2] <= lExtractedMean.m_Vector.at(0)) && 

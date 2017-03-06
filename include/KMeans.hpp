@@ -9,6 +9,8 @@
 #include <assert.h>
 #include <chrono>
 #include <algorithm>
+#include <memory>
+#include <thread>
 
 template <class T>
 struct DataPoint
@@ -43,7 +45,52 @@ class KMeans
 {
 
 public:
-    KMeans(const uint16_t numArgsIn) : m_NumArgs{numArgsIn}, m_PointIndex{0} {}
+    KMeans(const uint16_t numArgsIn) : 
+      m_PointVector({}),
+      m_NumArgs(numArgsIn), 
+      m_CurrentNumMeans(0),
+      m_CurrentMeans({}),
+      m_PointIndex(0),
+      m_PeriodicClusteringAndAsssignationThread(nullptr),
+      m_KillPeriodicThreadFlag(nullptr)
+      {
+		m_KillPeriodicThreadFlag = std::make_shared<bool>(false);  
+      }
+      
+    
+    void mLaunchPeriodicClusteringAndAssignationThread(const std::uint32_t aKMeansClusteringIntervals_ms)
+    {
+		
+		
+        m_PeriodicClusteringAndAsssignationThread = 
+          std::make_shared<std::thread>
+          (
+            std::bind
+            (
+              &KMeans::mPeriodicThreadFunction, 
+              this, 
+              std::placeholders::_1
+            ),
+            m_KillPeriodicThreadFlag
+          );
+	}
+	
+	void mPeriodicThreadFunction(std::shared_ptr<bool> aKillFlag)
+	{
+		while(!*aKillFlag)
+		{
+		    std::cerr << "Here!!!!!" << std::endl;
+	    }
+	}
+	
+	void mStopPeriodicClusteringAndAssignationThread()
+	{
+		*m_KillPeriodicThreadFlag = true;
+		if(nullptr != m_PeriodicClusteringAndAsssignationThread)
+		{
+			m_PeriodicClusteringAndAsssignationThread->join();
+		}
+	}
     
     void mUpdateMeans()
 	{
@@ -52,6 +99,11 @@ public:
 			std::vector<T> lAverageVector(m_NumArgs, 0.0);
 			typename std::vector<DataPoint<T> >::iterator lPointIterator = m_PointVector.begin();
 			std::uint16_t lNumberInGroup = 0;
+			
+			/*
+			 * Find all elements belonging to this group and build up 
+			 * a vector which is their average.
+			 */
 			while(lPointIterator != m_PointVector.end())
 			{
 				lPointIterator = std::find_if(lPointIterator, 
@@ -102,7 +154,7 @@ public:
     
     
     
-    const MeanPoint<T>& mExtractMean(const uint16_t aMeanLabel) const
+    const MeanPoint<T>& mExtractCurrentMeanBasedOnLabel(const uint16_t aMeanLabel) const
 	{		
 		auto it = std::find_if(m_CurrentMeans.begin(), 
 		                       m_CurrentMeans.end(), 
@@ -118,7 +170,7 @@ public:
 		return *it;
 	}    
     
-    const T mCalculateEuclideanDistance(const DataPoint<T> aPoint, const MeanPoint<T> aMeanPoint)
+    const T mCalculateEuclideanDistance(const DataPoint<T> aPoint, const MeanPoint<T> aMeanPoint) const
 	{
 		T lAcc = 0.0;
 		for(typename std::vector<T>::const_iterator lIt = aPoint.m_Vector.begin(); 
@@ -154,6 +206,9 @@ public:
     
     void mAssignAll()
 	{	
+		/*
+		 * Assign all elements of the point vector to their nearest mean
+		 */
 	    for(auto& i : m_PointVector)
 	    {
 			auto oldID = i.m_MeanIndex;
@@ -165,6 +220,10 @@ public:
 
     void mInitialise(const std::uint16_t aNumMeans)
 	{
+		/*
+		 * Initialise the engine when we have enough points.
+		 * Shuffle is used to randomly assign means to points.
+		 */
 		m_CurrentNumMeans = aNumMeans;
 		if(m_PointVector.size() < aNumMeans)
 		{
@@ -178,22 +237,9 @@ public:
 		}
 	}    
 
-    const std::vector<DataPoint<T> > mGetCurrentMeans()
+    const std::vector<MeanPoint<T> > mGetCurrentMeans() const
 	{
-		std::vector<DataPoint<T> > lCurrentMeans;
-		
-		for(uint16_t lIDIndex = 0; lIDIndex < m_CurrentNumMeans; ++lIDIndex)
-		{   
-			auto j = std::find_if(m_PointVector.begin(),
-			                   m_PointVector.end(),
-			                   [&](const DataPoint<T>& a){return lIDIndex == a.m_Index;});
-			                   	
-			if(j != m_PointVector.end())
-			{
-				lCurrentMeans.push_back(*j);
-			}
-		}
-		return lCurrentMeans;
+        return m_CurrentMeans;
 	}    
     
     const uint16_t mGetNumPoints() const
@@ -209,5 +255,7 @@ private:
     uint16_t m_CurrentNumMeans;  
     std::vector<MeanPoint<T> > m_CurrentMeans;
     std::uint16_t m_PointIndex;
+    std::shared_ptr<std::thread> m_PeriodicClusteringAndAsssignationThread;
+    std::shared_ptr<bool> m_KillPeriodicThreadFlag;
 };
 #endif
