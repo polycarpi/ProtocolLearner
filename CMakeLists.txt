@@ -19,7 +19,10 @@ set(TEST_SOURCES src/KMeans.cpp
             src/KMeansTests.cpp
             src/CUdpProtocolLearnerTests.cpp
             src/CUdpTestEchoServer.cpp
-            src/PacketAnalyserTests.cpp)
+            src/PacketAnalyserTests.cpp
+            src/LockFreeQueue.cpp
+            include/LockFreeQueue.hpp
+            src/LockFreeQueueTests.cpp)
             
 set(BINARY_SOURCES src/main.cpp
             src/KMeans.cpp 
@@ -28,12 +31,16 @@ set(BINARY_SOURCES src/main.cpp
             src/CUdpProtocolLearner.cpp
             src/CUdpClient.cpp
             src/CUdpReceiver.cpp
-            src/CUdpReceiver.cpp)            
+            src/CUdpReceiver.cpp)    
+            
+set(EXPERIMENTAL_SOURCES src/experimental/main.cpp)
 
 add_compile_options(-std=c++11)
 
 add_executable(tests ${TEST_SOURCES})
 add_executable(binary ${BINARY_SOURCES})
+add_executable(experimental ${EXPERIMENTAL_SOURCES})
 
 TARGET_LINK_LIBRARIES(tests pcap pthread boost_system boost_thread)
 TARGET_LINK_LIBRARIES(binary pcap pthread boost_system boost_thread)
+TARGET_LINK_LIBRARIES(experimental pcap pthread boost_system boost_thread)

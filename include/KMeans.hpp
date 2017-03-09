@@ -12,6 +12,8 @@
 #include <memory>
 #include <thread>
 
+#include "LockFreeQueue.hpp"
+
 template <class T>
 struct DataPoint
 {
@@ -52,13 +54,15 @@ public:
       m_CurrentMeans({}),
       m_PointIndex(0),
       m_PeriodicClusteringAndAsssignationThread(nullptr),
-      m_KillPeriodicThreadFlag(nullptr)
+      m_KillPeriodicThreadFlag(nullptr),
+      m_Initialised(false),
+      m_CircularBuffer(65535)
       {
 		m_KillPeriodicThreadFlag = std::make_shared<bool>(false);  
       }
       
     
-    void mLaunchPeriodicClusteringAndAssignationThread(const std::uint32_t aKMeansClusteringIntervals_ms)
+    void mLaunchPeriodicClusteringAndAssignationThread(const std::uint32_t aKMeansClusteringIntervals_ms, const std::uint16_t aNumMeans)
     {
 		
 		
@@ -69,17 +73,39 @@ public:
             (
               &KMeans::mPeriodicThreadFunction, 
               this, 
-              std::placeholders::_1
-            ),
-            m_KillPeriodicThreadFlag
+              std::placeholders::_1,
+              std::placeholders::_2
+              ),
+            m_KillPeriodicThreadFlag,
+            aNumMeans
           );
 	}
 	
-	void mPeriodicThreadFunction(std::shared_ptr<bool> aKillFlag)
+	void mPeriodicThreadFunction(std::shared_ptr<bool> aKillFlag, const std::uint16_t aNumMeans)
 	{
+		std::uint32_t oldNumberPointsInVector = m_PointVector.size();
 		while(!*aKillFlag)
 		{
-		    std::cerr << "Here!!!!!" << std::endl;
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			std::uint32_t currentSize = m_PointVector.size();
+			std::cerr << "oldNumberPointsInVector: " << oldNumberPointsInVector << std::endl;			
+			if(currentSize != oldNumberPointsInVector)
+			{
+				
+				std::cerr << "currentSize: " << currentSize << std::endl;
+				if(!m_Initialised && currentSize >= aNumMeans)
+				{
+					mInitialise(aNumMeans);
+				}
+				else if(currentSize > aNumMeans)
+				{
+					mAssignAll();
+					mUpdateMeans();					
+				}
+				
+				++oldNumberPointsInVector = currentSize;
+				
+			}
 	    }
 	}
 	
@@ -235,6 +261,7 @@ public:
 	    {
 	    	m_CurrentMeans.emplace_back(lMean, m_PointVector.at(lMean).m_Vector);
 		}
+		m_Initialised = true;
 	}    
 
     const std::vector<MeanPoint<T> > mGetCurrentMeans() const
@@ -257,5 +284,7 @@ private:
     std::uint16_t m_PointIndex;
     std::shared_ptr<std::thread> m_PeriodicClusteringAndAsssignationThread;
     std::shared_ptr<bool> m_KillPeriodicThreadFlag;
+    bool m_Initialised;
+    LockFreeQueue<DataPoint<T> > m_CircularBuffer;
 };
 #endif

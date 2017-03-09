@@ -112,6 +112,19 @@ binary/fast:
 .PHONY : binary/fast
 
 #=============================================================================
+# Target rules for targets named experimental
+
+# Build rule for target.
+experimental: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 experimental
+.PHONY : experimental
+
+# fast build rule for target.
+experimental/fast:
+	$(MAKE) -f CMakeFiles/experimental.dir/build.make CMakeFiles/experimental.dir/build
+.PHONY : experimental/fast
+
+#=============================================================================
 # Target rules for targets named tests
 
 # Build rule for target.
@@ -331,6 +344,54 @@ src/KMeansTests.cpp.s:
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/KMeansTests.cpp.s
 .PHONY : src/KMeansTests.cpp.s
 
+src/LockFreeQueue.o: src/LockFreeQueue.cpp.o
+.PHONY : src/LockFreeQueue.o
+
+# target to build an object file
+src/LockFreeQueue.cpp.o:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/LockFreeQueue.cpp.o
+.PHONY : src/LockFreeQueue.cpp.o
+
+src/LockFreeQueue.i: src/LockFreeQueue.cpp.i
+.PHONY : src/LockFreeQueue.i
+
+# target to preprocess a source file
+src/LockFreeQueue.cpp.i:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/LockFreeQueue.cpp.i
+.PHONY : src/LockFreeQueue.cpp.i
+
+src/LockFreeQueue.s: src/LockFreeQueue.cpp.s
+.PHONY : src/LockFreeQueue.s
+
+# target to generate assembly for a file
+src/LockFreeQueue.cpp.s:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/LockFreeQueue.cpp.s
+.PHONY : src/LockFreeQueue.cpp.s
+
+src/LockFreeQueueTests.o: src/LockFreeQueueTests.cpp.o
+.PHONY : src/LockFreeQueueTests.o
+
+# target to build an object file
+src/LockFreeQueueTests.cpp.o:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/LockFreeQueueTests.cpp.o
+.PHONY : src/LockFreeQueueTests.cpp.o
+
+src/LockFreeQueueTests.i: src/LockFreeQueueTests.cpp.i
+.PHONY : src/LockFreeQueueTests.i
+
+# target to preprocess a source file
+src/LockFreeQueueTests.cpp.i:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/LockFreeQueueTests.cpp.i
+.PHONY : src/LockFreeQueueTests.cpp.i
+
+src/LockFreeQueueTests.s: src/LockFreeQueueTests.cpp.s
+.PHONY : src/LockFreeQueueTests.s
+
+# target to generate assembly for a file
+src/LockFreeQueueTests.cpp.s:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/LockFreeQueueTests.cpp.s
+.PHONY : src/LockFreeQueueTests.cpp.s
+
 src/PacketAnalyser.o: src/PacketAnalyser.cpp.o
 .PHONY : src/PacketAnalyser.o
 
@@ -382,6 +443,30 @@ src/PacketAnalyserTests.cpp.s:
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/PacketAnalyserTests.cpp.s
 .PHONY : src/PacketAnalyserTests.cpp.s
 
+src/experimental/main.o: src/experimental/main.cpp.o
+.PHONY : src/experimental/main.o
+
+# target to build an object file
+src/experimental/main.cpp.o:
+	$(MAKE) -f CMakeFiles/experimental.dir/build.make CMakeFiles/experimental.dir/src/experimental/main.cpp.o
+.PHONY : src/experimental/main.cpp.o
+
+src/experimental/main.i: src/experimental/main.cpp.i
+.PHONY : src/experimental/main.i
+
+# target to preprocess a source file
+src/experimental/main.cpp.i:
+	$(MAKE) -f CMakeFiles/experimental.dir/build.make CMakeFiles/experimental.dir/src/experimental/main.cpp.i
+.PHONY : src/experimental/main.cpp.i
+
+src/experimental/main.s: src/experimental/main.cpp.s
+.PHONY : src/experimental/main.s
+
+# target to generate assembly for a file
+src/experimental/main.cpp.s:
+	$(MAKE) -f CMakeFiles/experimental.dir/build.make CMakeFiles/experimental.dir/src/experimental/main.cpp.s
+.PHONY : src/experimental/main.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -414,6 +499,7 @@ help:
 	@echo "... depend"
 	@echo "... binary"
 	@echo "... edit_cache"
+	@echo "... experimental"
 	@echo "... rebuild_cache"
 	@echo "... tests"
 	@echo "... src/CUdpClient.o"
@@ -440,12 +526,21 @@ help:
 	@echo "... src/KMeansTests.o"
 	@echo "... src/KMeansTests.i"
 	@echo "... src/KMeansTests.s"
+	@echo "... src/LockFreeQueue.o"
+	@echo "... src/LockFreeQueue.i"
+	@echo "... src/LockFreeQueue.s"
+	@echo "... src/LockFreeQueueTests.o"
+	@echo "... src/LockFreeQueueTests.i"
+	@echo "... src/LockFreeQueueTests.s"
 	@echo "... src/PacketAnalyser.o"
 	@echo "... src/PacketAnalyser.i"
 	@echo "... src/PacketAnalyser.s"
 	@echo "... src/PacketAnalyserTests.o"
 	@echo "... src/PacketAnalyserTests.i"
 	@echo "... src/PacketAnalyserTests.s"
+	@echo "... src/experimental/main.o"
+	@echo "... src/experimental/main.i"
+	@echo "... src/experimental/main.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

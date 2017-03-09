@@ -46,22 +46,24 @@ public:
 	
     CUdpProtocolLearner(CUdpPair& aHighToLowUdpPair,
                         CUdpPair& aLowToHighUdpPair,
+                        const std::uint16_t aNumMeansForClassification,
                         const std::uint32_t aMaxPacketsToObserve,
                         const std::uint32_t aMaxTimeToObserve_s,
                         const std::shared_ptr<PacketAnalysisAlgo> aAnalysisAlgo)
                         :
                         m_HighToLowUdpPair(aHighToLowUdpPair), // GCC bug prevents uniform initialisation here...
                         m_LowToHighUdpPair(aLowToHighUdpPair),
+                        m_NumMeansForClassification(aNumMeansForClassification),
                         m_MaxPacketsToObserve{aMaxPacketsToObserve},
                         m_MaxTimeToObserve_s{aMaxTimeToObserve_s},
-                        m_MessageClassificationEngine(2),
+                        m_MessageClassificationEngine(m_NumMeansForClassification),
                         m_DownwardTrafficSeen(false),
                         m_AlgoPointer(aAnalysisAlgo)
     {
 		m_HighToLowUdpPair.mSetPacketReceivedCallback(std::bind(&CUdpProtocolLearner::mProcessPacket, this, std::placeholders::_1));
 		m_LowToHighUdpPair.mSetPacketReceivedCallback(std::bind(&CUdpProtocolLearner::mProcessPacket, this, std::placeholders::_1));
 		
-		m_MessageClassificationEngine.mLaunchPeriodicClusteringAndAssignationThread(m_KMeansClusteringIntervals_ms);
+		m_MessageClassificationEngine.mLaunchPeriodicClusteringAndAssignationThread(m_KMeansClusteringIntervals_ms, m_NumMeansForClassification);
 	}
 	
 	~CUdpProtocolLearner()
@@ -104,6 +106,7 @@ public:
 private:
     CUdpPair& m_HighToLowUdpPair;
     CUdpPair& m_LowToHighUdpPair;
+    const std::uint16_t m_NumMeansForClassification;
     const std::uint32_t m_MaxPacketsToObserve;
     const std::uint32_t m_MaxTimeToObserve_s;
     KMeans<float> m_MessageClassificationEngine;
