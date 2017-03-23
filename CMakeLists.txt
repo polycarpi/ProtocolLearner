@@ -20,9 +20,9 @@ set(TEST_SOURCES src/KMeans.cpp
             src/CUdpProtocolLearnerTests.cpp
             src/CUdpTestEchoServer.cpp
             src/PacketAnalyserTests.cpp
-            src/LockFreeQueue.cpp
-            include/LockFreeQueue.hpp
-            src/LockFreeQueueTests.cpp)
+            src/ConcurrentQueue.cpp
+            include/ConcurrentQueue.hpp
+            src/ConcurrentQueueTests.cpp)
             
 set(BINARY_SOURCES src/main.cpp
             src/KMeans.cpp 

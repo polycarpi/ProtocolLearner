@@ -11,8 +11,12 @@
 #include <algorithm>
 #include <memory>
 #include <thread>
+#include <condition_variable>
+#include <atomic>
 
-#include "LockFreeQueue.hpp"
+#include "ConcurrentQueue.hpp"
+
+#define DEBUG 0
 
 template <class T>
 struct DataPoint
@@ -54,68 +58,113 @@ public:
       m_CurrentMeans({}),
       m_PointIndex(0),
       m_PeriodicClusteringAndAsssignationThread(nullptr),
-      m_KillPeriodicThreadFlag(nullptr),
       m_Initialised(false),
-      m_CircularBuffer(65535)
+      m_CircularBuffer(65535),
+      m_NewSubmissionReady(false),
+      m_StopThread(false)
       {
-		m_KillPeriodicThreadFlag = std::make_shared<bool>(false);  
       }
       
+    ~KMeans()
+    {
+	}
     
     void mLaunchPeriodicClusteringAndAssignationThread(const std::uint32_t aKMeansClusteringIntervals_ms, const std::uint16_t aNumMeans)
     {
 		
-		
-        m_PeriodicClusteringAndAsssignationThread = 
-          std::make_shared<std::thread>
+        m_PeriodicClusteringAndAsssignationThread = std::make_shared<std::thread>
           (
             std::bind
             (
               &KMeans::mPeriodicThreadFunction, 
               this, 
-              std::placeholders::_1,
-              std::placeholders::_2
+              std::placeholders::_1
               ),
-            m_KillPeriodicThreadFlag,
             aNumMeans
           );
 	}
 	
-	void mPeriodicThreadFunction(std::shared_ptr<bool> aKillFlag, const std::uint16_t aNumMeans)
+	void mPeriodicThreadFunction(const std::uint16_t aNumMeans)
 	{
 		std::uint32_t oldNumberPointsInVector = m_PointVector.size();
-		while(!*aKillFlag)
+		
+		while(!m_StopThread)
 		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			std::unique_lock<std::mutex> lTempLock(m_MainMutex);
+#if DEBUG
+			std::cerr << "Going to sleep" << std::endl;
+#endif			
+			while(!m_NewSubmissionReady) m_ConditionVariable.wait(lTempLock);
+#if DEBUG			
+			std::cerr << "Waking up" << std::endl;
+#endif			
+			
 			std::uint32_t currentSize = m_PointVector.size();
+#if DEBUG			
 			std::cerr << "oldNumberPointsInVector: " << oldNumberPointsInVector << std::endl;			
+#endif			
+			
 			if(currentSize != oldNumberPointsInVector)
 			{
-				
+#if DEBUG				
 				std::cerr << "currentSize: " << currentSize << std::endl;
+#endif				
 				if(!m_Initialised && currentSize >= aNumMeans)
 				{
 					mInitialise(aNumMeans);
 				}
 				else if(currentSize > aNumMeans)
 				{
-					mAssignAll();
-					mUpdateMeans();					
+					try
+					{
+					    mAssignAll();
+				    }
+				    catch(const std::exception& e)
+				    {
+#if DEBUG						
+						std::cerr << "Caught exception: " << e.what() << std::endl;
+#endif						
+					}
+					    mUpdateMeans();
 				}
 				
 				++oldNumberPointsInVector = currentSize;
 				
 			}
+			if(m_StopThread) break;
+			m_NewSubmissionReady = false;
 	    }
+#if DEBUG	    
+	    std::cerr << "Child thread exiting here......................." << std::endl;
+#endif	    
+	    return;
 	}
 	
 	void mStopPeriodicClusteringAndAssignationThread()
 	{
-		*m_KillPeriodicThreadFlag = true;
+#if DEBUG
+		std::cout << "Calling stop thread" << std::endl;
+#endif		
+        std::unique_lock<std::mutex> lTempLock(m_MainMutex);
+        m_NewSubmissionReady = true;
+        m_StopThread = true;
+        m_ConditionVariable.notify_all();
+        lTempLock.unlock();
+#if DEBUG        
+		std::cerr << "Notified" << std::endl;
+#endif		
+		
 		if(nullptr != m_PeriodicClusteringAndAsssignationThread)
 		{
+#if DEBUG			
+			std::cerr << "Attempting to join child thread... " << std::endl;
+#endif			
 			m_PeriodicClusteringAndAsssignationThread->join();
+#if DEBUG			
+		    std::cerr << "Joined the clustering thread" << std::endl;		
+#endif		    
 		}
+		
 	}
     
     void mUpdateMeans()
@@ -158,7 +207,11 @@ public:
 
     void mSubmit(const std::vector<T>& inVector)
     {
+		std::unique_lock<std::mutex> lTempLock(m_MainMutex);
         m_PointVector.emplace_back(inVector, m_PointIndex++);
+        m_NewSubmissionReady = true;
+        lTempLock.unlock();
+        m_ConditionVariable.notify_all();
     }
     
     const DataPoint<T>& mExtract(const uint16_t aIndex) const
@@ -176,9 +229,6 @@ public:
 		}
 		return *it;
 	}    
-    
-    
-    
     
     const MeanPoint<T>& mExtractCurrentMeanBasedOnLabel(const uint16_t aMeanLabel) const
 	{		
@@ -283,8 +333,11 @@ private:
     std::vector<MeanPoint<T> > m_CurrentMeans;
     std::uint16_t m_PointIndex;
     std::shared_ptr<std::thread> m_PeriodicClusteringAndAsssignationThread;
-    std::shared_ptr<bool> m_KillPeriodicThreadFlag;
     bool m_Initialised;
-    LockFreeQueue<DataPoint<T> > m_CircularBuffer;
+    ConcurrentQueue<DataPoint<T> > m_CircularBuffer;
+    std::condition_variable m_ConditionVariable;
+    std::mutex m_MainMutex;
+    std::atomic<bool> m_NewSubmissionReady;
+    std::atomic<bool> m_StopThread;
 };
 #endif

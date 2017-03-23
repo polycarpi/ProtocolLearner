@@ -293,6 +293,54 @@ src/CUdpTestEchoServer.cpp.s:
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/CUdpTestEchoServer.cpp.s
 .PHONY : src/CUdpTestEchoServer.cpp.s
 
+src/ConcurrentQueue.o: src/ConcurrentQueue.cpp.o
+.PHONY : src/ConcurrentQueue.o
+
+# target to build an object file
+src/ConcurrentQueue.cpp.o:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/ConcurrentQueue.cpp.o
+.PHONY : src/ConcurrentQueue.cpp.o
+
+src/ConcurrentQueue.i: src/ConcurrentQueue.cpp.i
+.PHONY : src/ConcurrentQueue.i
+
+# target to preprocess a source file
+src/ConcurrentQueue.cpp.i:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/ConcurrentQueue.cpp.i
+.PHONY : src/ConcurrentQueue.cpp.i
+
+src/ConcurrentQueue.s: src/ConcurrentQueue.cpp.s
+.PHONY : src/ConcurrentQueue.s
+
+# target to generate assembly for a file
+src/ConcurrentQueue.cpp.s:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/ConcurrentQueue.cpp.s
+.PHONY : src/ConcurrentQueue.cpp.s
+
+src/ConcurrentQueueTests.o: src/ConcurrentQueueTests.cpp.o
+.PHONY : src/ConcurrentQueueTests.o
+
+# target to build an object file
+src/ConcurrentQueueTests.cpp.o:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/ConcurrentQueueTests.cpp.o
+.PHONY : src/ConcurrentQueueTests.cpp.o
+
+src/ConcurrentQueueTests.i: src/ConcurrentQueueTests.cpp.i
+.PHONY : src/ConcurrentQueueTests.i
+
+# target to preprocess a source file
+src/ConcurrentQueueTests.cpp.i:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/ConcurrentQueueTests.cpp.i
+.PHONY : src/ConcurrentQueueTests.cpp.i
+
+src/ConcurrentQueueTests.s: src/ConcurrentQueueTests.cpp.s
+.PHONY : src/ConcurrentQueueTests.s
+
+# target to generate assembly for a file
+src/ConcurrentQueueTests.cpp.s:
+	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/ConcurrentQueueTests.cpp.s
+.PHONY : src/ConcurrentQueueTests.cpp.s
+
 src/KMeans.o: src/KMeans.cpp.o
 .PHONY : src/KMeans.o
 
@@ -343,54 +391,6 @@ src/KMeansTests.s: src/KMeansTests.cpp.s
 src/KMeansTests.cpp.s:
 	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/KMeansTests.cpp.s
 .PHONY : src/KMeansTests.cpp.s
-
-src/LockFreeQueue.o: src/LockFreeQueue.cpp.o
-.PHONY : src/LockFreeQueue.o
-
-# target to build an object file
-src/LockFreeQueue.cpp.o:
-	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/LockFreeQueue.cpp.o
-.PHONY : src/LockFreeQueue.cpp.o
-
-src/LockFreeQueue.i: src/LockFreeQueue.cpp.i
-.PHONY : src/LockFreeQueue.i
-
-# target to preprocess a source file
-src/LockFreeQueue.cpp.i:
-	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/LockFreeQueue.cpp.i
-.PHONY : src/LockFreeQueue.cpp.i
-
-src/LockFreeQueue.s: src/LockFreeQueue.cpp.s
-.PHONY : src/LockFreeQueue.s
-
-# target to generate assembly for a file
-src/LockFreeQueue.cpp.s:
-	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/LockFreeQueue.cpp.s
-.PHONY : src/LockFreeQueue.cpp.s
-
-src/LockFreeQueueTests.o: src/LockFreeQueueTests.cpp.o
-.PHONY : src/LockFreeQueueTests.o
-
-# target to build an object file
-src/LockFreeQueueTests.cpp.o:
-	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/LockFreeQueueTests.cpp.o
-.PHONY : src/LockFreeQueueTests.cpp.o
-
-src/LockFreeQueueTests.i: src/LockFreeQueueTests.cpp.i
-.PHONY : src/LockFreeQueueTests.i
-
-# target to preprocess a source file
-src/LockFreeQueueTests.cpp.i:
-	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/LockFreeQueueTests.cpp.i
-.PHONY : src/LockFreeQueueTests.cpp.i
-
-src/LockFreeQueueTests.s: src/LockFreeQueueTests.cpp.s
-.PHONY : src/LockFreeQueueTests.s
-
-# target to generate assembly for a file
-src/LockFreeQueueTests.cpp.s:
-	$(MAKE) -f CMakeFiles/tests.dir/build.make CMakeFiles/tests.dir/src/LockFreeQueueTests.cpp.s
-.PHONY : src/LockFreeQueueTests.cpp.s
 
 src/PacketAnalyser.o: src/PacketAnalyser.cpp.o
 .PHONY : src/PacketAnalyser.o
@@ -520,18 +520,18 @@ help:
 	@echo "... src/CUdpTestEchoServer.o"
 	@echo "... src/CUdpTestEchoServer.i"
 	@echo "... src/CUdpTestEchoServer.s"
+	@echo "... src/ConcurrentQueue.o"
+	@echo "... src/ConcurrentQueue.i"
+	@echo "... src/ConcurrentQueue.s"
+	@echo "... src/ConcurrentQueueTests.o"
+	@echo "... src/ConcurrentQueueTests.i"
+	@echo "... src/ConcurrentQueueTests.s"
 	@echo "... src/KMeans.o"
 	@echo "... src/KMeans.i"
 	@echo "... src/KMeans.s"
 	@echo "... src/KMeansTests.o"
 	@echo "... src/KMeansTests.i"
 	@echo "... src/KMeansTests.s"
-	@echo "... src/LockFreeQueue.o"
-	@echo "... src/LockFreeQueue.i"
-	@echo "... src/LockFreeQueue.s"
-	@echo "... src/LockFreeQueueTests.o"
-	@echo "... src/LockFreeQueueTests.i"
-	@echo "... src/LockFreeQueueTests.s"
 	@echo "... src/PacketAnalyser.o"
 	@echo "... src/PacketAnalyser.i"
 	@echo "... src/PacketAnalyser.s"

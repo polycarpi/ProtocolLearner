@@ -17,9 +17,8 @@
 
 static const std::uint32_t milliseccondSleepTimeForTermination = 50;
 
-
 TEST_CASE("Test basic UDP protocol learner functionality, " 
-          "namely that we can set up a protocol learner and inject packets")
+          "namely that we can set up a protocol learner and inject packets", "[a]")
 {
 	
 	const std::uint16_t lHighReceiverPort{10146};
@@ -49,14 +48,17 @@ TEST_CASE("Test basic UDP protocol learner functionality, "
 	const std::vector<std::uint8_t> lFrame({0x1A, 0x4C});
 	
 	UdpProtocolLearner.mStartListening();
-	
-	UdpSender.mSend(lFrame);
-	
+		
 	boost::thread t(boost::bind(&boost::asio::io_service::run, &lMainService));
-	std::this_thread::sleep_for (std::chrono::milliseconds(milliseccondSleepTimeForTermination));
+	
+	UdpSender.mSend(lFrame);	
+	
+	std::this_thread::sleep_for (std::chrono::milliseconds(milliseccondSleepTimeForTermination));	
+		
+	std::this_thread::sleep_for (std::chrono::milliseconds(milliseccondSleepTimeForTermination));			
 	lMainService.stop();
 	t.join();
-
+	
 	REQUIRE(UdpProtocolLearner.mGetPacketsSeenHighToLow() == 1);
 	REQUIRE(UdpProtocolLearner.mGetTotalBytesSeenHighToLow() == 2);
 	REQUIRE(UdpProtocolLearner.mGetPacketsSeenLowToHigh() == 0);
@@ -64,7 +66,7 @@ TEST_CASE("Test basic UDP protocol learner functionality, "
 
 }
 
-TEST_CASE("Test that the protocol learner terminates after observing the max number of packets")
+TEST_CASE("Test that the protocol learner terminates after observing the max number of packets", "[b]")
 {
 	const std::uint16_t lHighReceiverPort{10146};
 	const std::uint16_t lLowReceiverPort{10020};
@@ -394,7 +396,7 @@ TEST_CASE("Test an entire round trip", "[roundtrip]")
 
     REQUIRE(packetsReceived == 0);
 
-    const std::uint32_t numPacketsToSend = 148;
+    const std::uint32_t numPacketsToSend = 18;
 
     for(std::uint32_t lF = 0; lF < numPacketsToSend; ++lF)
     {
@@ -489,11 +491,14 @@ TEST_CASE("Test that a protocol learner can assess the packets observed", "[peri
 	
 	UdpProtocolLearner.mStartListening();
 	
+	boost::thread t(boost::bind(&boost::asio::io_service::run, &lMainService));
+
 	UdpSender.mSend(lFrame);
 	UdpSender.mSend(lFrame);
 	
-	boost::thread t(boost::bind(&boost::asio::io_service::run, &lMainService));
-	std::this_thread::sleep_for (std::chrono::milliseconds(1000));
+	std::this_thread::sleep_for (std::chrono::milliseconds(milliseccondSleepTimeForTermination));	
+	
+	std::this_thread::sleep_for (std::chrono::milliseconds(milliseccondSleepTimeForTermination));			
 	lMainService.stop();
 	t.join();
 
@@ -501,5 +506,5 @@ TEST_CASE("Test that a protocol learner can assess the packets observed", "[peri
 	
 	// Check that the protocol learner engine has been initialised in the background
 	REQUIRE(UdpProtocolLearner.mGetCurrentMeans().size() == 2);
-
+	
 }

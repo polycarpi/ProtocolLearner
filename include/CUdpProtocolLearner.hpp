@@ -63,12 +63,12 @@ public:
 		m_HighToLowUdpPair.mSetPacketReceivedCallback(std::bind(&CUdpProtocolLearner::mProcessPacket, this, std::placeholders::_1));
 		m_LowToHighUdpPair.mSetPacketReceivedCallback(std::bind(&CUdpProtocolLearner::mProcessPacket, this, std::placeholders::_1));
 		
-		m_MessageClassificationEngine.mLaunchPeriodicClusteringAndAssignationThread(m_KMeansClusteringIntervals_ms, m_NumMeansForClassification);
+		m_MessageClassificationEngine.mLaunchPeriodicClusteringAndAssignationThread(100, m_NumMeansForClassification);
 	}
 	
 	~CUdpProtocolLearner()
 	{
-		m_MessageClassificationEngine.mStopPeriodicClusteringAndAssignationThread();
+        m_MessageClassificationEngine.mStopPeriodicClusteringAndAssignationThread();		
 	}
 	
 	const std::uint32_t mGetPacketsSeenHighToLow()
@@ -112,6 +112,5 @@ private:
     KMeans<float> m_MessageClassificationEngine;
     bool m_DownwardTrafficSeen;
     std::shared_ptr<PacketAnalysisAlgo> m_AlgoPointer;
-    static const std::uint32_t m_KMeansClusteringIntervals_ms = 100;
 };
 #endif
